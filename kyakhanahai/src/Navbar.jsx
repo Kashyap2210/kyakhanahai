@@ -48,7 +48,7 @@ export default function Navbar() {
   return (
     <div
       className={
-        "navbar bg-white border-b border-gray-500 h-20 z-100 flex justify-between items-center text-2xl font-bold fixed top-0 w-full opacity-100"
+        "navbar bg-white border-b border-gray-500 h-20 flex justify-between items-center text-2xl font-bold fixed top-0 w-full opacity-100"
       }
     >
       <div className=" text-center">
@@ -56,7 +56,7 @@ export default function Navbar() {
           <Navbarelements title={`@kyakhanahai.com`} />
         </Link>
       </div>
-      <div className="flex justify-between items-center pr-8">
+      <div className="flex justify-between items-center text-center pr-8 z-9999">
         <Link to="/">
           <Navbarelements title={"About"} />
         </Link>

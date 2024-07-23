@@ -5,3 +5,7 @@
 .main-content {
   height: calc(100vh - 5rem); /* Adjust the height based on the navbar height */
 }
+
+.navbar {
+  z-index: 9999 !important;
+}
