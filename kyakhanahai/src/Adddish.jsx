@@ -52,44 +52,55 @@ export default function Login() {
   };
 
   return (
-    <div className="login-form text-center mt-5 mb-40">
+    <div className="login-form  text-center h-screen flex justify-center pt-16 w-fill">
       <hr />
       <form onSubmit={handleSubmit}>
-        <TextField
-          id="outlined-name"
-          label="Dish-name"
-          variant="outlined"
-          type="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          fullWidth
-        />
-        <TextField
-          id="outlined-category"
-          label="Category"
-          variant="outlined"
-          type="name"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          fullWidth
-        />
-        <TextField
-          id="outlined-type"
-          label="Type"
-          variant="outlined"
-          type="type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          required
-          fullWidth
-        />
-        {/* <Link> */}
-        <Button variant="contained" color="success" type="submit">
-          Add dish
-        </Button>
-        {/* </Link> */}
+        <div className="m-8 w-80">
+          <TextField
+            id="outlined-name"
+            label="Dish-name"
+            variant="outlined"
+            type="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            fullWidth
+          />
+        </div>
+        <div className="m-8 w-80">
+          <TextField
+            id="outlined-category"
+            label="Category"
+            variant="outlined"
+            type="name"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            fullWidth
+          />
+        </div>
+        <div className="m-8 w-80">
+          <TextField
+            id="outlined-type"
+            label="Type"
+            variant="outlined"
+            type="type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+            fullWidth
+          />
+        </div>
+        <div className="m-8 w-80">
+          <Button
+            variant="contained"
+            color="secondary"
+            type="submit"
+            className="w-full"
+          >
+            Add dish
+          </Button>
+        </div>
       </form>
     </div>
   );
