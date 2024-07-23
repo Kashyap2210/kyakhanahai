@@ -16,7 +16,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={"text-black "}
           >
-            <LinkedInIcon className={"text-black"} />
+            <LinkedInIcon className={"text-black"} color="secondary" />
             LinkedIn
           </a>
         </li>
@@ -27,7 +27,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={"text-black "}
           >
-            <GitHubIcon className={"text-black "} />
+            <GitHubIcon className={"text-black "} color="secondary" />
             Github
           </a>
         </li>
@@ -38,7 +38,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={"text-black "}
           >
-            <InstagramIcon className={"text-black "} />
+            <InstagramIcon className={"text-black "} color="secondary" />
             Instagram
           </a>
         </li>
@@ -49,7 +49,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={"text-black "}
           >
-            <YouTubeIcon className={"text-black "} />
+            <YouTubeIcon className={"text-black "} color="secondary" />
             Youtube
           </a>
         </li>

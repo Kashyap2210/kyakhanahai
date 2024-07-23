@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "./index.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 export default function Secondintrocomp() {
   const navigate = useNavigate();
@@ -78,19 +79,31 @@ export default function Secondintrocomp() {
           <br />
           <br />
           <Link to="/adddish">
-            <button className="h-8 w-40 border">Add Dish</button>{" "}
+            <Button variant="outlined" className="h-8 border" color="secondary">
+              Add Dish
+            </Button>
           </Link>
           &nbsp;&nbsp;&nbsp;
           <Link to="/showdish">
-            <button className="h-8 w-40 border" onClick={showDish}>
+            <Button
+              variant="outlined"
+              className="h-8 border"
+              color="secondary"
+              onClick={showDish}
+            >
               See added dishes
-            </button>
+            </Button>
           </Link>
           &nbsp;&nbsp;&nbsp;
           <Link to="/getdish">
-            <button className="h-8 w-40 border" onClick={getDish}>
+            <Button
+              variant="outlined"
+              className="h-8  border"
+              color="secondary"
+              onClick={getDish}
+            >
               Generate Dish
-            </button>
+            </Button>
           </Link>
         </p>
       </div>

@@ -4,6 +4,7 @@ import Navbarelements from "./Navbarelements";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,12 +48,12 @@ export default function Navbar() {
   return (
     <div
       className={
-        "navbar border-b border-gray-500 h-20 z-50 bg-white text-black flex justify-between items-center text-2xl font-bold sticky top-0 opacity-100"
+        "navbar bg-white border-b border-gray-500 h-20 z-100 flex justify-between items-center text-2xl font-bold fixed top-0 w-full opacity-100"
       }
     >
-      <div className=" text-center ">
+      <div className=" text-center">
         <Link to="/">
-          <Navbarelements title={"@kyakhanahai.com"} />
+          <Navbarelements title={`@kyakhanahai.com`} />
         </Link>
       </div>
       <div className="flex justify-between items-center pr-8">
