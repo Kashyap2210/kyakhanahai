@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 export default function Getdish() {
   const navigate = useNavigate();
@@ -31,27 +32,45 @@ export default function Getdish() {
     }
   };
   return (
-    <div className="h-screen mt-20">
-      <h1>Your Meal For The Day</h1>
-      {dish ? (
-        <>
-          <p>Name: {dish.name}</p>
-          <Link to="/getdish">
-            <button className="h-8 w-40 border" onClick={getDish}>
-              Generate Dish
-            </button>
-          </Link>
-        </>
-      ) : (
-        <>
-          <p>"No Dish Found Please Try Again!"</p>
-          <Link to="/getdish">
-            <button className="h-8 w-40 border" onClick={getDish}>
-              Generate Dish
-            </button>
-          </Link>
-        </>
-      )}
+    <div className="p-16  text-center flex justify-center items-align">
+      <div className="pt-16 h-auto  text-center ">
+        <h1 className="text-center mt-8 text-4xl font-bold	">
+          Your Meal For The Day Is
+        </h1>
+        {dish ? (
+          <>
+            <p className="text-2xl mt-4">{dish.name}</p>
+            <Link to="/getdish">
+              <Button
+                className="h-8 border"
+                variant="contained"
+                color="secondary"
+                onClick={getDish}
+                sx={{ marginTop: "2rem" }}
+              >
+                Want Something Else?
+              </Button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <p className="text-2xl mt-4 text-red-500">
+              "No Dish Found Please Try Again!"
+            </p>
+            <Link to="/getdish">
+              <Button
+                className="h-8 border"
+                variant="contained"
+                color="secondary"
+                onClick={getDish}
+                sx={{ marginTop: "2rem" }}
+              >
+                Want Something Else?
+              </Button>
+            </Link>
+          </>
+        )}
+      </div>
     </div>
   );
 }
