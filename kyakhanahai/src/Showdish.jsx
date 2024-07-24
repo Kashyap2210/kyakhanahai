@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function Showdish() {
   const navigate = useNavigate();
@@ -53,121 +54,41 @@ export default function Showdish() {
   };
 
   return (
-    <div className="h-screen mt-20">
-      <h1>Added Dishes</h1>
-      {dishes.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th className="hidden">ID</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dishes.map((dish) => (
-              <tr key={dish.id}>
-                <td className="hidden">{dish.id}</td>
-                <td>{dish.name}</td>
-                <td>{dish.category}</td>
-                <td>{dish.type}</td>
-                <td>
-                  <button onClick={() => deleteDish(dish.id)}>Delete</button>
-                </td>
+    <div className="pt-16 gap-16 flex flex-col justify-around">
+      <div>
+        <h1 className="text-center mt-8 text-4xl font-bold	">Added Dishes</h1>
+      </div>
+      <div className=" flex justify-center items-center mb-16">
+        {dishes.length > 0 ? (
+          <table className="table-auto border border-black ">
+            <thead className="border border-black">
+              <tr className="border border-black">
+                <th className="hidden">ID</th>
+                <th className="border border-black p-4">Name</th>
+                <th className="border border-black p-4">Category</th>
+                <th className="border border-black p-4">Type</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No dishes found.</p>
-      )}
+            </thead>
+            <tbody>
+              {dishes.map((dish) => (
+                <tr key={dish.id}>
+                  <td className="hidden">{dish.id}</td>
+                  <td className="border border-black p-4">{dish.name}</td>
+                  <td className="border border-black p-4">{dish.category}</td>
+                  <td className="border border-black p-4">{dish.type}</td>
+                  <td className="border border-black p-4">
+                    <button onClick={() => deleteDish(dish.id)}>
+                      <DeleteOutlineIcon color="secondary"></DeleteOutlineIcon>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No dishes found.</p>
+        )}
+      </div>
     </div>
   );
 }
-
-// import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import "./index.css";
-
-// export default function Showdish() {
-//   const navigate = useNavigate();
-//   const [dishes, setDishes] = useState([]);
-
-//   useEffect(() => {
-//     fetchDishes();
-//   }, []);
-
-//   const fetchDishes = async () => {
-//     try {
-//       const response = await axios.get("http://localhost:3000/showdish", {
-//         withCredentials: true,
-//       });
-
-//       if (response.status === 200) {
-//         setDishes(response.data);
-//       } else {
-//         console.log("Fetching dishes failed");
-//         navigate("/login");
-//       }
-//     } catch (error) {
-//       console.error("Error fetching dishes:", error);
-//       if (error.response && error.response.status === 401) {
-//         navigate("/login");
-//       }
-//     }
-//   };
-
-//   const deleteDish = async (id) => {
-//     try {
-//       const response = await axios.post(
-//         "http://localhost:3000/deletedish",
-//         { id },
-//         { withCredentials: true }
-//       );
-
-//       if (response.status === 200) {
-//         fetchDishes(); // Refresh the list after deletion
-//       } else {
-//         console.log("Deleting the dish failed");
-//       }
-//     } catch (error) {
-//       console.error("Error deleting dish:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>Added Dishes</h1>
-//       {dishes.length > 0 ? (
-//         <table>
-//           <thead>
-//             <tr>
-//               <th className="hidden">ID</th>
-//               <th>Name</th>
-//               <th>Category</th>
-//               <th>Type</th>
-//               <th>Action</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {dishes.map((dish) => (
-//               <tr key={dish.id}>
-//                 <td className="hidden">{dish.id}</td>
-//                 <td>{dish.name}</td>
-//                 <td>{dish.category}</td>
-//                 <td>{dish.type}</td>
-//                 <td>
-//                   <button onClick={() => deleteDish(dish.id)}>Delete</button>
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       ) : (
-//         <p>No dishes found.</p>
-//       )}
-//     </div>
-//   );
-// }
