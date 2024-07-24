@@ -63,9 +63,14 @@ const userFoodSchema = new mongoose.Schema({
   name: String,
   category: String,
   type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "WebsiteUser",
+    required: true,
+  },
 });
 
-const User = mongoose.model("User", userFoodSchema);
+const Dish = mongoose.model("Dish", userFoodSchema);
 /* MODEL FOR THE DISH END */
 
 /* MODEL FOR THE USER STARTS*/
@@ -176,7 +181,7 @@ app.post("/signup", async (req, res) => {
 app.post("/adddish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for adddish");
   const { name, category, type } = req.body;
-  const lastDish = await User.findOne().sort({ _id: -1 });
+  const lastDish = await Dish.findOne().sort({ _id: -1 });
   let newId;
   if (lastDish) {
     // console.log(lastDish.id);
@@ -189,14 +194,14 @@ app.post("/adddish", isLoggedIn, async (req, res) => {
   console.log("name=", name);
   console.log("category=", category);
   console.log("type=", type);
-  let user = new User({
+  let dish = new Dish({
     id: newId,
     name: name,
     category: category,
     type: type,
   });
   if (category && name && type) {
-    await user.save();
+    await dish.save();
     res.status(200).send({ message: "Dish Added To DB" });
   } else {
     res.status(401).send({ message: "Improper Data" });
@@ -207,7 +212,7 @@ app.get("/showdish", isLoggedIn, async (req, res) => {
   console.log("Inside /showdish route");
   console.log("User in /showdish:", req.user); // Check if user is available
   try {
-    const dishes = await User.find({});
+    const dishes = await Dish.find({});
     if (!res.headersSent) {
       res.status(200).json(dishes);
     }
@@ -224,7 +229,7 @@ app.post("/deletedish", async (req, res) => {
   const { id } = req.body;
   console.log("id=", id);
   try {
-    await User.findOneAndDelete({ id: id });
+    await Dish.findOneAndDelete({ id: id });
     res.status(200).send("Dish Deleted");
   } catch (e) {
     console.log(e);
@@ -235,11 +240,11 @@ app.post("/deletedish", async (req, res) => {
 app.get("/getdish", async (req, res) => {
   console.log("request is recieved for generating a random dish");
   try {
-    const totalDishes = await User.countDocuments();
+    const totalDishes = await Dish.countDocuments();
     console.log("Total No. Of Dishes = ", totalDishes);
     const randomDishNumber = Math.floor(Math.random() * totalDishes) + 1;
     console.log("Random Dish Number = ", randomDishNumber);
-    const yourDish = await User.findOne().skip(randomDishNumber).limit(1);
+    const yourDish = await Dish.findOne().skip(randomDishNumber).limit(1);
     console.log(yourDish);
     res.status(200).send(yourDish);
     console.log("response sent");
