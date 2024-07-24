@@ -31,7 +31,7 @@ export default function Getdish() {
     }
   };
   return (
-    <div className="h-screen">
+    <div className="h-screen mt-20">
       <h1>Your Meal For The Day</h1>
       {dish ? (
         <>

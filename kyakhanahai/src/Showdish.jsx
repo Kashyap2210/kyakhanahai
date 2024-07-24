@@ -53,7 +53,7 @@ export default function Showdish() {
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen mt-20">
       <h1>Added Dishes</h1>
       {dishes.length > 0 ? (
         <table>
