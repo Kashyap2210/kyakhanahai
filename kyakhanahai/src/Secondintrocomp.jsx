@@ -52,7 +52,9 @@ export default function Secondintrocomp() {
       }
       navigate("/getdish");
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/getdish");
+      const response = await axios.get("http://localhost:3000/getdish", {
+        withCredentials: true,
+      });
       console.log("Request sent");
 
       if (response.status === 200) {

@@ -94,30 +94,6 @@ passport.use(new LocalStrategy(websiteUser.authenticate()));
 passport.serializeUser(websiteUser.serializeUser());
 passport.deserializeUser(websiteUser.deserializeUser());
 
-// const ensureAuthenticated = (req, res, next) => {
-//   console.log("User:", req.user); // Log user details to check if the user is authenticated
-//   if (req.isAuthenticated()) {
-//     return next();
-//   } else {
-//     res
-//       .status(401)
-//       .send({ message: "You must be logged in to access this resource" });
-//   }
-// };
-
-// const isLoggedIn = (req, res, next) => {
-//   console.log("You Are In isLoggedIn MDWARE");
-//   console.log(req.body, "Current");
-//   // console.log(req.path, "..", req.originalUrl, "1");
-//   if (!req.isAuthenticated()) {
-//     console.log(req.body, "In isLoggedIn");
-//     console.log("Checking if user is logged in", "2");
-//     // req.session.redirectUrl = req.originalUrl;
-//     // req.flash("Error", "You Need To LogIn Before Adding A Listing");
-//     return res.status(401).send({ message: "Please Login To Add Your Dish" });
-//   }
-// };
-
 const isLoggedIn = (req, res, next) => {
   console.log("isLoggedIn middleware triggered");
   console.log("User:", req.user); // Check if the user object is populated
@@ -130,10 +106,6 @@ const isLoggedIn = (req, res, next) => {
   next();
 };
 
-// app.get("/test", (req, res) => {
-//   res.send("Test is successful");
-// });
-
 app.get("/checkAuth", (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ authenticated: true });
@@ -142,7 +114,22 @@ app.get("/checkAuth", (req, res) => {
   }
 });
 
-// CHATGPT
+app.post("/signup", async (req, res) => {
+  try {
+    const { name, username, password } = req.body;
+    const existingUser = await websiteUser.findOne({ username });
+    if (existingUser) {
+      return res.status(409).send({ message: "User already registered" });
+    }
+    const newUser = new websiteUser({ username, name });
+    await websiteUser.register(newUser, password);
+    res.status(200).send({ message: "Signup successful" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "An error occurred" });
+  }
+});
+
 app.post("/login", (req, res, next) => {
   console.log("Log In Request Recieved At Backend");
   passport.authenticate("local", (err, user, info) => {
@@ -162,26 +149,12 @@ app.post("/login", (req, res, next) => {
   console.log("User Successfully Logged In");
 });
 
-app.post("/signup", async (req, res) => {
-  try {
-    const { name, username, password } = req.body;
-    const existingUser = await websiteUser.findOne({ username });
-    if (existingUser) {
-      return res.status(409).send({ message: "User already registered" });
-    }
-    const newUser = new websiteUser({ username, name });
-    await websiteUser.register(newUser, password);
-    res.status(200).send({ message: "Signup successful" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: "An error occurred" });
-  }
-});
-
 app.post("/adddish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for adddish");
   const { name, category, type } = req.body;
-  const lastDish = await Dish.findOne().sort({ _id: -1 });
+  const userId = req.user._id;
+
+  const lastDish = await Dish.findOne({ userId }).sort({ _id: -1 });
   let newId;
   if (lastDish) {
     // console.log(lastDish.id);
@@ -199,6 +172,7 @@ app.post("/adddish", isLoggedIn, async (req, res) => {
     name: name,
     category: category,
     type: type,
+    userId,
   });
   if (category && name && type) {
     await dish.save();
@@ -209,10 +183,11 @@ app.post("/adddish", isLoggedIn, async (req, res) => {
 });
 
 app.get("/showdish", isLoggedIn, async (req, res) => {
+  const userId = req.user._id;
   console.log("Inside /showdish route");
   console.log("User in /showdish:", req.user); // Check if user is available
   try {
-    const dishes = await Dish.find({});
+    const dishes = await Dish.find({ userId });
     if (!res.headersSent) {
       res.status(200).json(dishes);
     }
@@ -227,9 +202,11 @@ app.get("/showdish", isLoggedIn, async (req, res) => {
 app.post("/deletedish", async (req, res) => {
   console.log("request is recieved for deletedish");
   const { id } = req.body;
+  const userId = req.user._id;
+
   console.log("id=", id);
   try {
-    await Dish.findOneAndDelete({ id: id });
+    await Dish.findOneAndDelete({ id, userId });
     res.status(200).send("Dish Deleted");
   } catch (e) {
     console.log(e);
@@ -237,14 +214,17 @@ app.post("/deletedish", async (req, res) => {
   }
 });
 
-app.get("/getdish", async (req, res) => {
+app.get("/getdish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for generating a random dish");
+  const userId = req.user._id;
   try {
-    const totalDishes = await Dish.countDocuments();
+    const totalDishes = await Dish.countDocuments({ userId });
     console.log("Total No. Of Dishes = ", totalDishes);
     const randomDishNumber = Math.floor(Math.random() * totalDishes) + 1;
     console.log("Random Dish Number = ", randomDishNumber);
-    const yourDish = await Dish.findOne().skip(randomDishNumber).limit(1);
+    const yourDish = await Dish.findOne({ userId })
+      .skip(randomDishNumber)
+      .limit(1);
     console.log(yourDish);
     res.status(200).send(yourDish);
     console.log("response sent");
