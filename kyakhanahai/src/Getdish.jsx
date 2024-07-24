@@ -14,7 +14,7 @@ export default function Getdish() {
     try {
       navigate("/getdish");
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/getdish", {
+      const response = await axios.get("http://localhost:3000/api/getdish", {
         withCredentials: true,
       });
       console.log("Request sent to get dish");

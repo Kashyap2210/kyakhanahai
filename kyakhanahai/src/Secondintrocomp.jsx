@@ -9,18 +9,8 @@ export default function Secondintrocomp() {
   const showDish = async (e) => {
     e.preventDefault();
     try {
-      // Check if user is authenticated
-      // const authResponse = await axios.get("http://localhost:3000/checkAuth", {
-      //   withCredentials: true,
-      // });
-      // if (!authResponse.data.authenticated) {
-      //   // Redirect to login page if not authenticated
-      //   alert("Please Login To See Your Dishes");
-      //   navigate("/login");
-      //   return;
-      // }
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/showdish", {
+      const response = await axios.get("http://localhost:3000/api/showdish", {
         withCredentials: true,
       });
       console.log("Request sent");
@@ -41,9 +31,12 @@ export default function Secondintrocomp() {
     e.preventDefault();
     try {
       // Check if user is authenticated
-      const authResponse = await axios.get("http://localhost:3000/checkAuth", {
-        withCredentials: true,
-      });
+      const authResponse = await axios.get(
+        "http://localhost:3000/api/checkAuth",
+        {
+          withCredentials: true,
+        }
+      );
       if (!authResponse.data.authenticated) {
         // Redirect to login page if not authenticated
         alert("Please Login To See What You Are Eating");
@@ -52,7 +45,7 @@ export default function Secondintrocomp() {
       }
       navigate("/getdish");
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/getdish", {
+      const response = await axios.get("http://localhost:3000/api/getdish", {
         withCredentials: true,
       });
       console.log("Request sent");

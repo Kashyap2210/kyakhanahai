@@ -19,7 +19,7 @@ export default function Login() {
     try {
       console.log("inside try block");
       const response = await axios.post(
-        "http://localhost:3000/signup",
+        "http://localhost:3000/api/signup",
         {
           username,
           password,

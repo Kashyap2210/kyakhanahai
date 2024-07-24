@@ -17,9 +17,12 @@ export default function Login() {
     e.preventDefault();
     try {
       // Check if user is authenticated
-      const authResponse = await axios.get("http://localhost:3000/checkAuth", {
-        withCredentials: true,
-      });
+      const authResponse = await axios.get(
+        "http://localhost:3000/api/checkAuth",
+        {
+          withCredentials: true,
+        }
+      );
       if (!authResponse.data.authenticated) {
         // Redirect to login page if not authenticated
         alert("Please Login To Add Your Dish");
@@ -29,7 +32,7 @@ export default function Login() {
 
       console.log("inside try block");
       const response = await axios.post(
-        "http://localhost:3000/adddish",
+        "http://localhost:3000/api/adddish",
         {
           name,
           category,

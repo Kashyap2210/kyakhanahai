@@ -101,12 +101,11 @@ const isLoggedIn = (req, res, next) => {
     console.log("User not authenticated, sending 401 response");
     return res.status(401).json({ message: "Unauthorized" });
   }
-
   console.log("User authenticated, proceeding to next middleware");
   next();
 };
 
-app.get("/checkAuth", (req, res) => {
+app.get("/api/checkAuth", (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ authenticated: true });
   } else {
@@ -114,7 +113,7 @@ app.get("/checkAuth", (req, res) => {
   }
 });
 
-app.post("/signup", async (req, res) => {
+app.post("/api/signup", async (req, res) => {
   try {
     const { name, username, password } = req.body;
     const existingUser = await websiteUser.findOne({ username });
@@ -130,7 +129,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/login", (req, res, next) => {
+app.post("/api/login", (req, res, next) => {
   console.log("Log In Request Recieved At Backend");
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -149,7 +148,7 @@ app.post("/login", (req, res, next) => {
   console.log("User Successfully Logged In");
 });
 
-app.post("/adddish", isLoggedIn, async (req, res) => {
+app.post("/api/adddish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for adddish");
   const { name, category, type } = req.body;
   const userId = req.user._id;
@@ -182,7 +181,7 @@ app.post("/adddish", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/showdish", isLoggedIn, async (req, res) => {
+app.get("/api/showdish", isLoggedIn, async (req, res) => {
   const userId = req.user._id;
   console.log("Inside /showdish route");
   console.log("User in /showdish:", req.user); // Check if user is available
@@ -199,7 +198,7 @@ app.get("/showdish", isLoggedIn, async (req, res) => {
   }
 });
 
-app.post("/deletedish", async (req, res) => {
+app.post("/api/deletedish", async (req, res) => {
   console.log("request is recieved for deletedish");
   const { id } = req.body;
   const userId = req.user._id;
@@ -214,7 +213,7 @@ app.post("/deletedish", async (req, res) => {
   }
 });
 
-app.get("/getdish", isLoggedIn, async (req, res) => {
+app.get("/api/getdish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for generating a random dish");
   const userId = req.user._id;
   try {
@@ -234,7 +233,7 @@ app.get("/getdish", isLoggedIn, async (req, res) => {
   }
 });
 
-app.post("/logout", (req, res, next) => {
+app.post("/api/logout", (req, res, next) => {
   console.log("Logout Request Recieved In Backeng");
   req.logout((err) => {
     if (err) {

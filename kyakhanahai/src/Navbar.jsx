@@ -4,7 +4,7 @@ import Navbarelements from "./Navbarelements";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
+// import RestaurantIcon from "@mui/icons-material/Restaurant";
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,9 +14,12 @@ export default function Navbar() {
     // Check authentication status on component mount
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/checkAuth", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:3000/api/checkAuth",
+          {
+            withCredentials: true,
+          }
+        );
         setIsAuthenticated(response.data.authenticated);
       } catch (error) {
         console.error("Error checking authentication status:", error);
@@ -32,7 +35,7 @@ export default function Navbar() {
     console.log("Logout Request Sent From Frontend");
     try {
       await axios.post(
-        "http://localhost:3000/logout",
+        "http://localhost:3000/api/logout",
         {},
         {
           withCredentials: true,

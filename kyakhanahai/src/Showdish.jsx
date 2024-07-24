@@ -13,7 +13,7 @@ export default function Showdish() {
   const showRemainingDishes = async () => {
     try {
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/showdish", {
+      const response = await axios.get("http://localhost:3000/api/showdish", {
         withCredentials: true,
       });
       console.log("Request sent");
@@ -33,7 +33,7 @@ export default function Showdish() {
     try {
       console.log("inside try block");
       const response = await axios.post(
-        "http://localhost:3000/deletedish",
+        "http://localhost:3000/api/deletedish",
         {
           id,
         },
