@@ -29,7 +29,7 @@ export default function Getdish() {
     }
   };
   return (
-    <div>
+    <div className="h-screen">
       <h1>Your Meal For The Day</h1>
       {dish ? (
         <>
