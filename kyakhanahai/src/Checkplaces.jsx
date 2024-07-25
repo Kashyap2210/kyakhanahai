@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { GoogleMap, useJsApiLoader, MarkerF } from "@react-google-maps/api";
-import AdvancedMarker from "./Advancedmarker";
-// import { Loader } from "@googlemaps/js-api-loader";
 
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API;
 export default function Checkplaces() {
