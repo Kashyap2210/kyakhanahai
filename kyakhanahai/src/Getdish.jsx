@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -9,6 +9,36 @@ export default function Getdish() {
   const navigate = useNavigate();
   const location = useLocation();
   const dish = location.state?.dish;
+  const [userLocation, setUserLocation] = useState(null);
+
+  const getLocation = (callback) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ latitude, longitude });
+          callback({ latitude, longitude });
+        },
+        (err) => {
+          console.log(err.message);
+          callback(null);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+      callback(null);
+    }
+  };
+
+  const handleSeeRestaurants = () => {
+    getLocation((location) => {
+      if (location) {
+        navigate("/checkplaces", { state: { userLocation: location, dish } });
+      } else {
+        console.log("Unable to retrieve location.");
+      }
+    });
+  };
 
   const getDish = async (e) => {
     e.preventDefault();
@@ -22,7 +52,8 @@ export default function Getdish() {
 
       if (response.status === 200) {
         navigate("/getdish", { state: { dish: response.data } });
-        console.log(response.data);
+        console.log(response.data.name, "Yehi bhejna hai bhai");
+        // navigate("/checkplaces", { state: { dish: response.data.name } });
         console.log("Navigated");
       } else {
         console.log("Login failed");
@@ -31,12 +62,14 @@ export default function Getdish() {
       console.error("Error logging in:", error);
     }
   };
+
   return (
     <div className="p-16  text-center flex justify-center items-align">
-      <div className="pt-16 h-auto  text-center ">
+      <div className="pt-16 text-center ">
         <h1 className="text-center mt-8 text-4xl font-bold	">
           Your Meal For The Day Is
         </h1>
+
         {dish ? (
           <>
             <p className="text-2xl mt-4">{dish.name}</p>
@@ -70,6 +103,17 @@ export default function Getdish() {
             </Link>
           </>
         )}
+        <div className="mt-8">
+          <Link to="/checkplaces">
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={handleSeeRestaurants}
+            >
+              See Restaurants That Serve This Dish
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

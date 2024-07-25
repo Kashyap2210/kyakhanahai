@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -7,6 +8,9 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
+const axios = require("axios");
+
+const apiKey = process.env.GOOGLE_API_KEY;
 
 app.use(
   cors({
@@ -230,6 +234,33 @@ app.get("/api/getdish", isLoggedIn, async (req, res) => {
   } catch (e) {
     console.log(e);
     res.status(400).send({ message: "Unable to Generate Random DIsh" });
+  }
+});
+
+app.get("/api/getNearbyRestaurants", isLoggedIn, async (req, res) => {
+  console.log("Request recieved for knowing all the restaurants.");
+  const { lat, lng, radius } = req.query;
+  try {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json`,
+      {
+        params: {
+          location: `${lat},${lng}`,
+          radius: radius,
+          type: "restaurant",
+          key: apiKey,
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("API Response:", response.data);
+    res.json(response.data.results);
+    console.log(response.data.results);
+    console.log("Restaurant data sent from endpoint to checkplaces");
+    // console.log(response.data.geometry.location, 1);
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
+    res.status(500).json({ error: "Failed to fetch restaurants" });
   }
 });
 

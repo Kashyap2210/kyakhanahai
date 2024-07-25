@@ -9,6 +9,7 @@ import Signup from "./Signup";
 import Adddish from "./Adddish";
 import Showdish from "./Showdish";
 import Getdish from "./Getdish";
+import Checkplaces from "./Checkplaces";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: "/adddish", element: <Adddish /> },
       { path: "/showdish", element: <Showdish /> },
       { path: "/getdish", element: <Getdish /> },
+      { path: "/checkplaces", element: <Checkplaces /> },
     ],
   },
 ]);
