@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { GoogleMap, useJsApiLoader, MarkerF } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  MarkerF,
+  InfoWindow,
+} from "@react-google-maps/api";
+import "./index.css";
 
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API;
 export default function Checkplaces() {
@@ -9,6 +15,9 @@ export default function Checkplaces() {
   const { userLocation, dish } = location.state || {};
   const [restaurants, setRestaurants] = useState([]);
   const [map, setMap] = useState(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+
+  //   console.log(restaurants[5].rating, 1);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -19,8 +28,9 @@ export default function Checkplaces() {
     ? {
         lat: userLocation.latitude,
         lng: userLocation.longitude,
+        zoom: 13.5,
       }
-    : { lat: 0, lng: 0 }; // Default center if userLocation is not available
+    : { lat: 0, lng: 0, zoom: 13.5 }; // Default center if userLocation is not available
 
   const onLoad = React.useCallback(
     function callback(map) {
@@ -63,7 +73,7 @@ export default function Checkplaces() {
   };
 
   return (
-    <div className="h-screen mt-20">
+    <div className="h-full pb-60 flex flex-col mt-20 overscroll-auto	">
       <h1>Your Location</h1>
       {userLocation ? (
         <p>
@@ -85,9 +95,7 @@ export default function Checkplaces() {
               lat: userLocation.latitude,
               lng: userLocation.longitude,
             }}
-            zoom={15}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
+            zoom={13.5}
             options={{
               streetViewControl: false,
               mapTypeControl: false,
@@ -100,13 +108,39 @@ export default function Checkplaces() {
                   lat: restaurant.geometry.location.lat,
                   lng: restaurant.geometry.location.lng,
                 }}
-                title={restaurant.name}
-                className="w-8 h-8 bg-black"
+                onClick={() => setSelectedRestaurant(restaurant)}
               />
             ))}
+
+            {selectedRestaurant && (
+              <InfoWindow
+                position={{
+                  lat: selectedRestaurant.geometry.location.lat,
+                  lng: selectedRestaurant.geometry.location.lng,
+                }}
+                onCloseClick={() => setSelectedRestaurant(null)}
+              >
+                <div>
+                  <h2>{selectedRestaurant.name}</h2>
+                  <p>Rating: {selectedRestaurant.rating}</p>
+                  <p>Address: {selectedRestaurant.vicinity}</p>
+                  <p>Status: {selectedRestaurant.business_status}</p>
+                </div>
+              </InfoWindow>
+            )}
           </GoogleMap>
-          //   </LoadScript>
         )}
+        <div className="rating-container">
+          {restaurants.map((restaurant, index) => (
+            <div key={index}>
+              <hr />
+              <p>{restaurant.name}</p>
+              <p>{restaurant.rating}</p>
+
+              <hr />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -59,7 +59,7 @@ export default function Navbar() {
           <Navbarelements title={`@kyakhanahai.com`} />
         </Link>
       </div>
-      <div className="flex justify-between items-center text-center pr-8 z-9999">
+      <div className="flex justify-between items-center text-center pr-8">
         <Link to="/">
           <Navbarelements title={"About"} />
         </Link>
