@@ -7,9 +7,9 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 
 export default function Footer() {
   return (
-    <div className="border-t border-gray-500 h-40 bg-white text-white flex flex-col justify-center items-center transition-all duration-150 w-full fixed bottom-0 opacity-100  ">
-      <ul>
-        <li>
+    <div className="border-t border-gray-500 h-20 bg-white text-white flex flex-col justify-center items-center transition-all duration-150 w-full fixed bottom-0 opacity-100  ">
+      <div className="flex gap-12">
+        <div>
           <a
             href="https://www.linkedin.com/in/kashyapsolanki2210/"
             target="_blank"
@@ -19,8 +19,8 @@ export default function Footer() {
             <LinkedInIcon className={"text-black"} color="secondary" />
             LinkedIn
           </a>
-        </li>
-        <li>
+        </div>
+        <div>
           <a
             href="https://github.com/Kashyap2210?tab=repositories"
             target="_blank"
@@ -30,8 +30,8 @@ export default function Footer() {
             <GitHubIcon className={"text-black "} color="secondary" />
             Github
           </a>
-        </li>
-        <li>
+        </div>
+        <div>
           <a
             href="https://www.instagram.com/kash_codes_/?igsh=MTI4ZXY2OGFwOWFhNw%3D%3D"
             target="_blank"
@@ -41,8 +41,8 @@ export default function Footer() {
             <InstagramIcon className={"text-black "} color="secondary" />
             Instagram
           </a>
-        </li>
-        <li>
+        </div>
+        <div>
           <a
             href="https://www.youtube.com/channel/UCC7_EltJMddOsGmANSxShCw"
             target="_blank"
@@ -52,8 +52,8 @@ export default function Footer() {
             <YouTubeIcon className={"text-black "} color="secondary" />
             Youtube
           </a>
-        </li>
-      </ul>
+        </div>
+      </div>
 
       <div className={"mt-2 text-black"}>
         Portfolio Website Of Kashyap Solanki Made Using REACT, TAILWIND,
