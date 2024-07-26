@@ -8,16 +8,17 @@ import {
   InfoWindowF,
 } from "@react-google-maps/api";
 import "./index.css";
+import parse from "html-react-parser";
 
+const ZOMATO_URL = "https://www.zomato.com/";
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API;
+
 export default function Checkplaces() {
   const location = useLocation();
   const { userLocation, dish } = location.state || {};
   const [restaurants, setRestaurants] = useState([]);
   const [map, setMap] = useState(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-
-  //   console.log(restaurants[5].rating, 1);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -65,6 +66,8 @@ export default function Checkplaces() {
           withCredentials: true,
         }
       );
+      console.log(response.data[0].photos[0].html_attributions);
+      // setRestaurantPhoto(response.data[0].photos[0].html_attributions);
       setRestaurants(response.data);
       console.log("This is response.data", response.data);
     } catch (error) {
@@ -136,7 +139,19 @@ export default function Checkplaces() {
               <hr />
               <p>{restaurant.name}</p>
               <p>{restaurant.rating}</p>
-
+              {restaurant.photos && restaurant.photos.length > 0 ? ( // Added check for photos and html_attributions
+                <div>
+                  {restaurant.photos[0].html_attributions.map((attr, i) => (
+                    <div>
+                      <span>Click Here For Details:</span>
+                      <div key={i}>{parse(attr)}</div>
+                      {/* Used parse to render HTML */}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No photos available.</p> // Added fallback message
+              )}
               <hr />
             </div>
           ))}

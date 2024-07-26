@@ -17,6 +17,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@react-google-maps/api": "^2.19.3",
     "axios": "^1.7.2",
+    "html-react-parser": "^5.1.12",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.25.0",
