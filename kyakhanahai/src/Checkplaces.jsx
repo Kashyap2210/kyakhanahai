@@ -5,7 +5,7 @@ import {
   GoogleMap,
   useJsApiLoader,
   MarkerF,
-  InfoWindow,
+  InfoWindowF,
 } from "@react-google-maps/api";
 import "./index.css";
 
@@ -113,7 +113,7 @@ export default function Checkplaces() {
             ))}
 
             {selectedRestaurant && (
-              <InfoWindow
+              <InfoWindowF
                 position={{
                   lat: selectedRestaurant.geometry.location.lat,
                   lng: selectedRestaurant.geometry.location.lng,
@@ -126,7 +126,7 @@ export default function Checkplaces() {
                   <p>Address: {selectedRestaurant.vicinity}</p>
                   <p>Status: {selectedRestaurant.business_status}</p>
                 </div>
-              </InfoWindow>
+              </InfoWindowF>
             )}
           </GoogleMap>
         )}
