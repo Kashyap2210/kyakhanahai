@@ -51,24 +51,24 @@ The project includes user authentication and basic CRUD operations for a user pr
 
 **Files:**
 
-- Adddish.js
+- Adddish.jsx
 - App.css
-- App.js
-- Checkplaces.js
-- Firstintrocomp.js
-- Footer.js
-- Getdish.js
-- Hotelcard.js
+- App.jsx
+- Checkplaces.jsx
+- Firstintrocomp.jsx
+- Footer.jsx
+- Getdish.jsx
+- Hotelcard.jsx
 - index.css
-- Login.js
-- main.js
-- Mainpage.js
-- Navbar.js
-- Navbarelements.js
-- Secondintrocomp.js
-- Showdish.js
-- Signup.js
-- Thirdintrocomp.js
+- Login.jsx
+- main.jsx
+- Mainpage.jsx
+- Navbar.jsx
+- Navbarelements.jsx
+- Secondintrocomp.jsx
+- Showdish.jsx
+- Signup.jsx
+- Thirdintrocomp.jsx
 
 ### Backend Overview
 
