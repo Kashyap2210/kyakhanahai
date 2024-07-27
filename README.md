@@ -75,5 +75,3 @@ The project includes user authentication and basic CRUD operations for a user pr
 **Files:**
 
 - index.js
-
-## Setup Environment Variables
