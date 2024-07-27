@@ -59,35 +59,54 @@ export default function Checkplaces() {
     try {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiUrl}`
-        // `https://maps.googleapis.com/maps/api/geocode/json?latlng=${19.182755},${72.840157}&key=${apiUrl}`
       );
 
       if (response.data.status === "OK") {
         const addressComponents =
           response.data.results[0]?.address_components || [];
 
-        const localityComponent = addressComponents.find(
+        let localityComponent = addressComponents.find(
           (component) =>
             component.types.includes("sublocality_level_1") ||
             component.types.includes("locality")
         );
 
-        // Update this part to better handle the city identification
-        const cityComponent = addressComponents.find(
+        // If localityComponent is not found, search for sublocality or neighborhood
+        if (!localityComponent) {
+          localityComponent = addressComponents.find(
+            (component) =>
+              component.types.includes("sublocality") ||
+              component.types.includes("neighborhood")
+          );
+        }
+
+        let cityComponent = addressComponents.find(
           (component) =>
             component.types.includes("locality") ||
             component.types.includes("administrative_area_level_1") ||
             component.types.includes("administrative_area_level_2")
         );
 
+        // If cityComponent is not found, search for other administrative levels or country
+        if (!cityComponent) {
+          cityComponent = addressComponents.find(
+            (component) =>
+              component.types.includes("administrative_area_level_3") ||
+              component.types.includes("administrative_area_level_4") ||
+              component.types.includes("country")
+          );
+        }
+
         let locality = localityComponent
           ? localityComponent.long_name.replace(/\s+/g, "-")
           : "Locality not found";
-        let city = cityComponent ? cityComponent.long_name : "City not found";
-        console.log(`This ${locality} Is In ${city}.`);
-        city = city.toLowerCase();
+        let city = cityComponent
+          ? cityComponent.long_name.replace(/\s+/g, "-")
+          : "City not found";
+
         locality = locality.toLowerCase();
-        console.log(city, "LOwercase");
+        city = city.toLowerCase();
+
         setCity(city); // Added: set city
         setLocality(locality);
         return { locality, city };
@@ -108,13 +127,12 @@ export default function Checkplaces() {
   };
 
   const handleOrderClick = () => {
-    // Modified: Removed parameters, use state
     console.log("Handle Order Click is clicked");
     if (city && dish) {
       console.log("Going to zomato");
       console.log(locality);
       console.log(city);
-      const searchUrl = `${ZOMATO_URL}${city}/${locality}-restaurants/dish-${dish.name}`;
+      const searchUrl = `${ZOMATO_URL}${city}/restaurants/dish-${dish.name}`;
       console.log(searchUrl);
       window.open(searchUrl, "_blank");
     }
@@ -200,7 +218,6 @@ export default function Checkplaces() {
         )}
         <div>
           <button onClick={handleOrderClick}>Order On Zomato</button>{" "}
-          {/* Modified: Direct call to handleOrderClick */}
         </div>
         <div className="rating-container">
           {restaurants.map((restaurant, index) => (
