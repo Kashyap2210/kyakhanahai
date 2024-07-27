@@ -1,18 +1,30 @@
-require("dotenv").config();
+require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
 const app = express();
-const cors = require("cors");
+const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); //Connects backend to MongoDB
+
+//Used for Authentication
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
-const axios = require("axios");
+
+const axios = require("axios"); //Used to send async req to REST Endpoints
 
 const apiKey = process.env.GOOGLE_API_KEY;
 
+//Middleware For CORS that accepts below mentione requests
 app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.options(
+  "*",
   cors({
     origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -26,15 +38,7 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-app.options(
-  "*",
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-
+//Session Options & Middleware
 const sessionOptions = {
   secret: "keyboardcat",
   resave: false,
@@ -46,11 +50,13 @@ const sessionOptions = {
     secure: false, // Set to true in production with HTTPS
   },
 };
-
 app.use(session(sessionOptions));
+
+//Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Method to connect Backedn Server to MongoDB
 main()
   .then(() => {
     console.log("Connection Successful");
@@ -67,6 +73,8 @@ const userFoodSchema = new mongoose.Schema({
   name: String,
   category: String,
   type: String,
+
+  //It stores users data so that each dish can be associated to a user
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "WebsiteUser",
@@ -79,6 +87,7 @@ const Dish = mongoose.model("Dish", userFoodSchema);
 
 /* MODEL FOR THE USER STARTS*/
 const websiteUserSchema = new mongoose.Schema({
+  //In this project username & emailId are equivalent (not equal, equivalent)
   username: {
     type: String,
     required: true,
@@ -91,13 +100,18 @@ const websiteUserSchema = new mongoose.Schema({
 });
 
 websiteUserSchema.plugin(passportLocalMongoose, {});
+
 const websiteUser = mongoose.model("websiteUser", websiteUserSchema);
 /* MODEL FOR THE USER ENDS */
 
 passport.use(new LocalStrategy(websiteUser.authenticate()));
+
+// Serializing & Deserializing Middlewares
+// They help data to be stored and transferred
 passport.serializeUser(websiteUser.serializeUser());
 passport.deserializeUser(websiteUser.deserializeUser());
 
+// Middleware to check if the user is authenticated or not. This middleware is used to check actual users information for authentication.
 const isLoggedIn = (req, res, next) => {
   console.log("isLoggedIn middleware triggered");
   console.log("User:", req.user); // Check if the user object is populated
@@ -109,6 +123,7 @@ const isLoggedIn = (req, res, next) => {
   next();
 };
 
+// This middleware check whether the user is logged In or not so that Navbar can be rendered Accordingly.
 app.get("/api/checkAuth", (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ authenticated: true });
@@ -117,6 +132,7 @@ app.get("/api/checkAuth", (req, res) => {
   }
 });
 
+// This is an endpoint for signingup a user
 app.post("/api/signup", async (req, res) => {
   try {
     const { name, username, password } = req.body;
@@ -133,6 +149,7 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
+// This is an endpoint for logging in the user
 app.post("/api/login", (req, res, next) => {
   console.log("Log In Request Recieved At Backend");
   passport.authenticate("local", (err, user, info) => {
@@ -152,6 +169,7 @@ app.post("/api/login", (req, res, next) => {
   console.log("User Successfully Logged In");
 });
 
+// This is an endpoint to add dish to DB and store it with Specific user details.
 app.post("/api/adddish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for adddish");
   const { name, category, type } = req.body;
@@ -166,10 +184,9 @@ app.post("/api/adddish", isLoggedIn, async (req, res) => {
     newId = 1;
   }
   console.log(newId);
-
-  console.log("name=", name);
-  console.log("category=", category);
-  console.log("type=", type);
+  // console.log("name=", name);
+  // console.log("category=", category);
+  // console.log("type=", type);
   let dish = new Dish({
     id: newId,
     name: name,
@@ -185,6 +202,7 @@ app.post("/api/adddish", isLoggedIn, async (req, res) => {
   }
 });
 
+// This is an endpoint to show all the dishes that user has stored in the DB
 app.get("/api/showdish", isLoggedIn, async (req, res) => {
   const userId = req.user._id;
   console.log("Inside /showdish route");
@@ -202,12 +220,12 @@ app.get("/api/showdish", isLoggedIn, async (req, res) => {
   }
 });
 
+// This is an endpoint for deleting a dish
 app.post("/api/deletedish", async (req, res) => {
   console.log("request is recieved for deletedish");
   const { id } = req.body;
   const userId = req.user._id;
-
-  console.log("id=", id);
+  // console.log("id=", id);
   try {
     await Dish.findOneAndDelete({ id, userId });
     res.status(200).send("Dish Deleted");
@@ -217,6 +235,7 @@ app.post("/api/deletedish", async (req, res) => {
   }
 });
 
+// This is an endpoint to generate a random dish
 app.get("/api/getdish", isLoggedIn, async (req, res) => {
   console.log("request is recieved for generating a random dish");
   const userId = req.user._id;
@@ -237,6 +256,7 @@ app.get("/api/getdish", isLoggedIn, async (req, res) => {
   }
 });
 
+// This is an endpoint to get nearby restaurants using PLACE API
 app.get("/api/getNearbyRestaurants", isLoggedIn, async (req, res) => {
   console.log("Request recieved for knowing all the restaurants.");
   const { lat, lng, radius } = req.query;
@@ -255,7 +275,7 @@ app.get("/api/getNearbyRestaurants", isLoggedIn, async (req, res) => {
     );
     console.log("API Response:", response.data);
     res.json(response.data.results);
-    console.log(response.data.results);
+    // console.log(response.data.results);
     console.log("Restaurant data sent from endpoint to checkplaces");
     // console.log(response.data.geometry.location, 1);
   } catch (error) {
@@ -264,6 +284,7 @@ app.get("/api/getNearbyRestaurants", isLoggedIn, async (req, res) => {
   }
 });
 
+// This is an endpoint to logout the user
 app.post("/api/logout", (req, res, next) => {
   console.log("Logout Request Recieved In Backeng");
   req.logout((err) => {
@@ -282,6 +303,7 @@ app.post("/api/logout", (req, res, next) => {
     });
   });
 });
+
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
