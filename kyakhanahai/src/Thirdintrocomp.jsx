@@ -1,3 +1,5 @@
+// This is the 3rd component on the home page
+
 import "./index.css";
 
 export default function Thirdintrocomp() {

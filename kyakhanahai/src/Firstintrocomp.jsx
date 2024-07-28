@@ -1,4 +1,7 @@
+// This is the 1st component on the home page
+
 import "./index.css";
+
 
 export default function Firstintrocomp() {
   return (

@@ -1,7 +1,8 @@
+// This is the 2nd component on the home page
 import { Link } from "react-router-dom";
 import "./index.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; //useNavigate is used to change to components on the DOM to some preset components
 import Button from "@mui/material/Button";
 
 export default function Secondintrocomp() {
@@ -11,10 +12,12 @@ export default function Secondintrocomp() {
     try {
       console.log("inside try block");
       const response = await axios.get("http://localhost:3000/api/showdish", {
-        withCredentials: true,
+        //Response sent to the backend
+        withCredentials: true, //This sends session details
       });
       console.log("Request sent");
 
+      // if-else loop to show the data or error
       if (response.status === 200) {
         navigate("/showdish", { state: { dishes: response.data } });
         console.log("Navigated");
@@ -23,6 +26,7 @@ export default function Secondintrocomp() {
         console.log("Login failed");
       }
     } catch (error) {
+      // Catch block to catch error while sending req to backend
       console.error("Error logging in:", error);
     }
   };
@@ -30,7 +34,7 @@ export default function Secondintrocomp() {
   const getDish = async (e) => {
     e.preventDefault();
     try {
-      // Check if user is authenticated
+      // Checking whether user is authenticated
       const authResponse = await axios.get(
         "http://localhost:3000/api/checkAuth",
         {
@@ -45,12 +49,14 @@ export default function Secondintrocomp() {
       }
       navigate("/getdish");
       console.log("inside try block");
+      // req for generating a random dish
       const response = await axios.get("http://localhost:3000/api/getdish", {
         withCredentials: true,
       });
       console.log("Request sent");
 
       if (response.status === 200) {
+        //once the random dish is generated then we navigate to Getdish component
         navigate("/getdish", { state: { dish: response.data } });
         console.log(response.data);
         console.log("Navigated");
