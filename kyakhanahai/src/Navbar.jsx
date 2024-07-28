@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 import Navbarelements from "./Navbarelements";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; //Link is used to give useNavigate a link to certain element
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // import RestaurantIcon from "@mui/icons-material/Restaurant";
 
 export default function Navbar() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); //isAuthenticated state is used to display seperate navbar elements depending on whether the user is loggedin or not
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,21 +17,22 @@ export default function Navbar() {
         const response = await axios.get(
           "http://localhost:3000/api/checkAuth",
           {
-            withCredentials: true,
+            withCredentials: true, //This is used to send data with req, like session cookies
           }
         );
-        setIsAuthenticated(response.data.authenticated);
+        setIsAuthenticated(response.data.authenticated); //sets the value of state with the data recieved from the backend
       } catch (error) {
         console.error("Error checking authentication status:", error);
       }
     };
 
-    checkAuth();
-    const intervalId = setInterval(checkAuth, 1000);
-    return () => clearInterval(intervalId);
+    checkAuth(); //Function is called to check the authentication
+    const intervalId = setInterval(checkAuth, 1000); //Sets periodic timer that calls checkAuth every second.
+    return () => clearInterval(intervalId); //Cleanup function to clear the interval
   }, []);
 
   const handleLogout = async () => {
+    //Function to log out the user & also sets the state of isAuthenticated to false
     console.log("Logout Request Sent From Frontend");
     try {
       await axios.post(
@@ -56,6 +57,7 @@ export default function Navbar() {
     >
       <div className=" text-center">
         <Link to="/">
+          {/* Navbarelements are seperate elements for displaying on the navbar. Which Navbarelement will be displayed will depend on the state variable isAuthenticated */}
           <Navbarelements title={`@kyakhanahai.com`} />
         </Link>
       </div>
@@ -64,6 +66,7 @@ export default function Navbar() {
           <Navbarelements title={"About"} />
         </Link>
         {isAuthenticated ? (
+          // COnditional rendering based on the state variable value
           <Link onClick={handleLogout}>
             <Navbarelements title={"Logout"} />
           </Link>
