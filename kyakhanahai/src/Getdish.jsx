@@ -1,3 +1,5 @@
+//This element renders the component that generates random dish
+
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -11,8 +13,10 @@ export default function Getdish() {
   const dish = location.state?.dish;
   const [userLocation, setUserLocation] = useState(null);
 
+  // This function requests permission from the user to access their location using the Geolocation API
   const getLocation = (callback) => {
     if (navigator.geolocation) {
+      // Check if the browser supports the Geolocation API
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -41,6 +45,7 @@ export default function Getdish() {
   };
 
   const getDish = async (e) => {
+    //This is a function to generate a random dish from the database
     e.preventDefault();
     try {
       navigate("/getdish");
@@ -52,7 +57,6 @@ export default function Getdish() {
 
       if (response.status === 200) {
         navigate("/getdish", { state: { dish: response.data } });
-        console.log(response.data.name, "Yehi bhejna hai bhai");
         // navigate("/checkplaces", { state: { dish: response.data.name } });
         console.log("Navigated");
       } else {
@@ -82,6 +86,7 @@ export default function Getdish() {
                 sx={{ marginTop: "2rem" }}
               >
                 Want Something Else?
+                {/* If the user is not in the mood to eat the generated dish then he can generate a new dish. */}
               </Button>
             </Link>
           </>
@@ -111,6 +116,7 @@ export default function Getdish() {
               onClick={handleSeeRestaurants}
             >
               See Restaurants That Serve This Dish
+              {/* by clicking this button he can see the nearby restaurants in his locality */}
             </Button>
           </Link>
         </div>

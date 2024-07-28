@@ -1,3 +1,5 @@
+// This component is used to add a dish to the DB
+
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -6,14 +8,16 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 
 export default function Login() {
+  // State variables for dish Info
   const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [type, setType] = useState("");
+  const [name, setName] = useState(""); //Name of the dish
+  const [category, setCategory] = useState(""); //Category as in meal, snack
+  const [type, setType] = useState(""); //Type i.e. Veg/Non-veg
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    // Function to handle the form submission
     e.preventDefault();
     try {
       // Check if user is authenticated
@@ -34,6 +38,7 @@ export default function Login() {
       const response = await axios.post(
         "http://localhost:3000/api/adddish",
         {
+          //name, category, type are sent to backend
           name,
           category,
           type,
@@ -44,7 +49,7 @@ export default function Login() {
 
       if (response.status === 200) {
         navigate("/");
-        alert("Your dish was added");
+        alert("Your dish was added"); 
         console.log("Navigated");
       } else {
         console.log("Login failed");
