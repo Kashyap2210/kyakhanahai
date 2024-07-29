@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose"); //Connects backend to MongoDB
+const multer = require("multer");
 
 //Used for Authentication
 const passport = require("passport");
@@ -32,7 +33,7 @@ app.options(
   })
 );
 app.use(bodyParser.json());
-
+app.use(express.urlencoded({ extended: true }));
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ message: "Something went wrong!" });
@@ -111,6 +112,16 @@ passport.use(new LocalStrategy(websiteUser.authenticate()));
 passport.serializeUser(websiteUser.serializeUser());
 passport.deserializeUser(websiteUser.deserializeUser());
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage });
+
 // Middleware to check if the user is authenticated or not. This middleware is used to check actual users information for authentication.
 const isLoggedIn = (req, res, next) => {
   console.log("isLoggedIn middleware triggered");
@@ -133,20 +144,29 @@ app.get("/api/checkAuth", (req, res) => {
 });
 
 // This is an endpoint for signingup a user
-app.post("/api/signup", async (req, res) => {
-  try {
-    const { name, username, password } = req.body;
-    const existingUser = await websiteUser.findOne({ username });
-    if (existingUser) {
-      return res.status(409).send({ message: "User already registered" });
-    }
-    const newUser = new websiteUser({ username, name });
-    await websiteUser.register(newUser, password);
-    res.status(200).send({ message: "Signup successful" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: "An error occurred" });
-  }
+// app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
+//   // try {
+//   //   const { name, username, password } = req.body;
+//   //   const existingUser = await websiteUser.findOne({ username });
+//   //   if (existingUser) {
+//   //     return res.status(409).send({ message: "User already registered" });
+//   //   }
+//   //   const newUser = new websiteUser({ username, name });
+//   //   await websiteUser.register(newUser, password);
+//   //   res.status(200).send({ message: "Signup successful" });
+//   // } catch (error) {
+//   //   console.log(error);
+//   //   res.status(500).send({ message: "An error occurred" });
+//   // }
+//   const profilePic = req.file;
+
+//   res.send(profilePic);
+//   console.log(profilePic);
+// });
+app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
+  console.log("File received: ", req.file); // Log the file details to the console
+  console.log("Body received: ", req.body); // Log the body details to the console
+  res.send({ file: req.file, body: req.body }); // Send the file details back in the response
 });
 
 // This is an endpoint for logging in the user
@@ -303,7 +323,6 @@ app.post("/api/logout", (req, res, next) => {
     });
   });
 });
-
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

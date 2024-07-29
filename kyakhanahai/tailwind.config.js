@@ -6,6 +6,12 @@ module.exports = {
       zIndex: {
         9999: 9999,
       },
+      height: {
+        "calc-100vh-minus-80": "calc(100vh - 80px)",
+      },
+      minHeight: {
+        "calc-100vh-minus-80": "calc(100vh - 80px)",
+      },
     },
     extend: {},
   },
