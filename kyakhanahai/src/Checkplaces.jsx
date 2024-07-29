@@ -13,6 +13,7 @@ import {
 } from "@react-google-maps/api";
 import "./index.css";
 import Hotelcard from "./Hotelcard"; //This is a card to show all the hotels in the nearby region
+import Button from "@mui/material/Button";
 
 const ZOMATO_URL = "https://www.zomato.com/"; //This is the base Zomato URL
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API; //This is the API key for places API and Google Maps API
@@ -173,71 +174,91 @@ export default function Checkplaces() {
   };
 
   return (
-    <div className="h-full pb-60 flex flex-col mt-20 overscroll-auto">
-      <h1>Your Location</h1>
-      {userLocation ? (
-        <p>
-          Latitude: {userLocation.latitude}
-          <br />
-          Longitude: {userLocation.longitude}
-          <br />
-        </p>
-      ) : (
-        <p>No location data available.</p>
-      )}
-      {dish ? <p>Dish: {dish.name}</p> : <p>No dish information available.</p>}
-      <div className="map-container">
-        {userLocation && restaurants.length > 0 && (
-          <GoogleMap
-            mapContainerStyle={{ height: "400px", width: "800px" }}
-            center={{
-              lat: userLocation.latitude,
-              lng: userLocation.longitude,
-            }}
-            zoom={13.5}
-            options={{
-              streetViewControl: false,
-              mapTypeControl: false,
-            }}
-          >
-            {restaurants.map((restaurant, index) => (
-              <MarkerF
-                // This is the marker on the map for the location of the restaurant
-                key={index}
-                position={{
-                  lat: restaurant.geometry.location.lat,
-                  lng: restaurant.geometry.location.lng,
-                }}
-                onClick={() => setSelectedRestaurant(restaurant)}
-              />
-            ))}
-
-            {selectedRestaurant && (
-              <InfoWindowF
-                //Always use "InfowindowF" instead of "Infowindow" as the later will show the main infobox with details of the restaurant and 1 small box that just has the "X" marker on it.
-
-                // When user clicks on any of the restaurant, soe information is displayed
-                position={{
-                  lat: selectedRestaurant.geometry.location.lat,
-                  lng: selectedRestaurant.geometry.location.lng,
-                }}
-                onCloseClick={() => setSelectedRestaurant(null)}
-              >
-                <div>
-                  {/* These are the contents of the infobox */}
-                  <h2>{selectedRestaurant.name}</h2>
-                  <p>Rating: {selectedRestaurant.rating}</p>
-                  <p>Address: {selectedRestaurant.vicinity}</p>
-                  <p>Status: {selectedRestaurant.business_status}</p>
-                </div>
-              </InfoWindowF>
-            )}
-          </GoogleMap>
-        )}
+    <div className="h-full pb-60 flex flex-col justify-center items-center mt-20 overscroll-auto">
+      <div className="flex  justify-center items-center mt-12 gap-64">
+        {/* Flexbox for location and Map Details */}
         <div>
-          <button onClick={handleOrderClick}>Order On Zomato</button>{" "}
+          <h1 className=" text-5xl">Your Location</h1>
+
+          {userLocation ? (
+            <p className=" text-2xl">
+              Latitude: {userLocation.latitude}
+              <br />
+              Longitude: {userLocation.longitude}
+              <br />
+            </p>
+          ) : (
+            <p className=" text-2xl">No location data available.</p>
+          )}
+          {dish ? (
+            <p className=" text-2xl">Dish: {dish.name}</p>
+          ) : (
+            <p className=" text-2xl">No dish information available.</p>
+          )}
+          <div className="mt-4">
+            <Button
+              onClick={handleOrderClick}
+              variant="contained"
+              color="secondary"
+            >
+              Order On Zomato
+            </Button>
+          </div>
         </div>
-        <div className="rating-container">
+        <div className="map-container">
+          {userLocation && restaurants.length > 0 && (
+            <GoogleMap
+              mapContainerStyle={{ height: "300px", width: "500px" }}
+              center={{
+                lat: userLocation.latitude,
+                lng: userLocation.longitude,
+              }}
+              zoom={13.5}
+              options={{
+                streetViewControl: false,
+                mapTypeControl: false,
+              }}
+            >
+              {restaurants.map((restaurant, index) => (
+                <MarkerF
+                  // This is the marker on the map for the location of the restaurant
+                  key={index}
+                  position={{
+                    lat: restaurant.geometry.location.lat,
+                    lng: restaurant.geometry.location.lng,
+                  }}
+                  onClick={() => setSelectedRestaurant(restaurant)}
+                />
+              ))}
+
+              {selectedRestaurant && (
+                <InfoWindowF
+                  //Always use "InfowindowF" instead of "Infowindow" as the later will show the main infobox with details of the restaurant and 1 small box that just has the "X" marker on it.
+
+                  // When user clicks on any of the restaurant, soe information is displayed
+                  position={{
+                    lat: selectedRestaurant.geometry.location.lat,
+                    lng: selectedRestaurant.geometry.location.lng,
+                  }}
+                  onCloseClick={() => setSelectedRestaurant(null)}
+                >
+                  <div>
+                    {/* These are the contents of the infobox */}
+                    <h2>{selectedRestaurant.name}</h2>
+                    <p>Rating: {selectedRestaurant.rating}</p>
+                    <p>Address: {selectedRestaurant.vicinity}</p>
+                    <p>Status: {selectedRestaurant.business_status}</p>
+                  </div>
+                </InfoWindowF>
+              )}
+            </GoogleMap>
+          )}
+        </div>
+      </div>
+      {/* Card Starts for Hotel From Here */}
+      <div className="">
+        <p className="text-4xl mt-12 text-center">List Of NearBy Restaurants</p>
+        <div className="rating-container mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* All the restaurant details are sent to the Hotelcard element that displays the details of the restaurant in a card */}
           {restaurants.map((restaurant, index) => (
             <Hotelcard
@@ -245,7 +266,7 @@ export default function Checkplaces() {
               name={restaurant.name}
               rating={restaurant.rating}
               htmlAttributions={
-                //This are the links to the restaurants details on the google maps
+                //These are the links to the restaurant's details on Google Maps
                 restaurant.photos && restaurant.photos.length > 0
                   ? restaurant.photos[0].html_attributions
                   : []

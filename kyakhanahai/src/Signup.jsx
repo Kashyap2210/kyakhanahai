@@ -73,7 +73,7 @@ export default function Login() {
       <div className="flex items-center justify-center gap-16 overflow-y-auto h-screen mt-8 mb-20 overflow-y-auto">
         <div className=" flex flex-col mt-20  mb-4	items-center justify-center">
           <div className="h-60 w-60 border flex cursor-pointer items-center justify-center border-black rounded-full	">
-            <div
+            {/* <div
               className="upload-container"
               onClick={handleFileInputClick}
               style={{
@@ -90,7 +90,7 @@ export default function Login() {
                 accept=".jpg, .png"
               />
               <PhotoCameraIcon style={{ fontSize: "100px", color: "#ccc" }} />
-            </div>
+            </div> */}
           </div>
           <div className="mt-16">
             <Button
@@ -128,7 +128,7 @@ export default function Login() {
                 fullWidth
               />
             </div>
-            <div className="m-4 w-80">
+            {/* <div className="m-4 w-80">
               <TextField
                 id="outlined-address"
                 label="Address"
@@ -138,7 +138,7 @@ export default function Login() {
                 required
                 fullWidth
               />
-            </div>
+            </div> */}
             <div className="m-4 w-80">
               <TextField
                 id="outlined-password"
@@ -151,7 +151,7 @@ export default function Login() {
                 fullWidth
               />
             </div>
-            <div className="m-4 w-80">
+            {/* <div className="m-4 w-80">
               <TextField
                 id="outlined-number"
                 label="Phone Number"
@@ -161,7 +161,7 @@ export default function Login() {
                 required
                 fullWidth
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

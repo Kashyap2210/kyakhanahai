@@ -9,16 +9,7 @@
 .navbar {
   z-index: 9999 !important;
 }
-.mapBox,
-.rating-container {
-  flex: 1 !important;
+.mapBox {
+  flex: 2 !important;
   overflow: auto !important;
 }
-
-/* .gm-style-iw {
-  display: none !important;
-} */
-
-/* .gm-style-iw-c:focus {
-  display: none !important;
-} */

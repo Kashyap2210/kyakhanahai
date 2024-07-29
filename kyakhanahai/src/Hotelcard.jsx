@@ -11,7 +11,7 @@ import parse from "html-react-parser"; // Import parse this is used to pars html
 
 export default function Hotelcard({ name, rating, htmlAttributions }) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345, border: "1px solid black", marginTop: "1rem" }}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {name}
@@ -24,7 +24,7 @@ export default function Hotelcard({ name, rating, htmlAttributions }) {
             htmlAttributions.map((attr, i) => (
               <div key={i}>
                 <span>Click Here For Details:</span>&nbsp;
-                <span>{parse(attr)}</span>
+                <span className="font-bold	">{parse(attr)}</span>
               </div>
             ))
           ) : (

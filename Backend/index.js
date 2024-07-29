@@ -120,7 +120,7 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const upload = multer({ storage });
+const upload = multer({ dest: "uploads/" });
 
 // Middleware to check if the user is authenticated or not. This middleware is used to check actual users information for authentication.
 const isLoggedIn = (req, res, next) => {
@@ -144,29 +144,24 @@ app.get("/api/checkAuth", (req, res) => {
 });
 
 // This is an endpoint for signingup a user
-// app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
-//   // try {
-//   //   const { name, username, password } = req.body;
-//   //   const existingUser = await websiteUser.findOne({ username });
-//   //   if (existingUser) {
-//   //     return res.status(409).send({ message: "User already registered" });
-//   //   }
-//   //   const newUser = new websiteUser({ username, name });
-//   //   await websiteUser.register(newUser, password);
-//   //   res.status(200).send({ message: "Signup successful" });
-//   // } catch (error) {
-//   //   console.log(error);
-//   //   res.status(500).send({ message: "An error occurred" });
-//   // }
-//   const profilePic = req.file;
-
-//   res.send(profilePic);
-//   console.log(profilePic);
-// });
 app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
-  console.log("File received: ", req.file); // Log the file details to the console
-  console.log("Body received: ", req.body); // Log the body details to the console
-  res.send({ file: req.file, body: req.body }); // Send the file details back in the response
+  try {
+    const { name, username, password } = req.body;
+    const existingUser = await websiteUser.findOne({ username });
+    if (existingUser) {
+      return res.status(409).send({ message: "User already registered" });
+    }
+    const newUser = new websiteUser({ username, name });
+    await websiteUser.register(newUser, password);
+    res.status(200).send({ message: "Signup successful" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "An error occurred" });
+  }
+  const profilePic = req.file;
+
+  res.send(profilePic);
+  console.log(profilePic);
 });
 
 // This is an endpoint for logging in the user
