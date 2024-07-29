@@ -8,6 +8,7 @@ function App() {
     <>
       <Navbar />
       <Outlet />
+      {/* Outlet allows us to change the maincontent of the page and populate different components. Outlet manages the nested routing in our code */}
       <Footer />
     </>
   );

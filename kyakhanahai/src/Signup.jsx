@@ -1,3 +1,5 @@
+// THis component renders the signup page and submits user details to the DataBase
+
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -7,6 +9,7 @@ import "./index.css";
 import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
 
 export default function Login() {
+  // User details taken as state
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

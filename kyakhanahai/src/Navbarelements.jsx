@@ -1,3 +1,5 @@
+// This component renders the navbar elements and assigns them title and onClick functionalities
+
 import "./index.css";
 
 export default function Navbar({ title, onClick }) {

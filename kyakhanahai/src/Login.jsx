@@ -1,3 +1,5 @@
+// THis is the login component
+
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -7,11 +9,12 @@ import LoginIcon from "@mui/icons-material/Login";
 import "./index.css";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); //Username is stored as state variable
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    //Submit handler for login form
     // console.log(username, password);
     e.preventDefault();
     try {
