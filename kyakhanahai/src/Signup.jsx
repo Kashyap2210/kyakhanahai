@@ -1,6 +1,6 @@
 // THis component renders the signup page and submits user details to the DataBase
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
@@ -9,24 +9,51 @@ import "./index.css";
 import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
-export default function Login() {
+export default function Signup() {
   const fileInputRef = useRef(null);
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
   };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      setPreviewUrl(URL.createObjectURL(selectedFile)); // **Change made here**
+    }
+  };
+
   // User details taken as state
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [profilePic, setProfilePic] = useState(null);
+  const [file, setFile] = useState();
+  const [previewUrl, setPreviewUrl] = useState(null);
+
   const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    setProfilePic(e.target.files[0]); // Set the selected file
-  };
+  useEffect(() => {
+    const handleBeforeUnload = async (event) => {
+      if (file) {
+        event.preventDefault();
+        try {
+          await axios.delete("http://localhost:3000/api/delete-file", {
+            data: { filePath: file.path },
+          });
+        } catch (error) {
+          console.error("Error deleting file:", error);
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [file]);
 
   const handleSubmit = async (e) => {
     console.log("Inside post request front-end, 1");
@@ -38,9 +65,11 @@ export default function Login() {
     formData.append("name", name);
     formData.append("address", address);
     formData.append("phoneNumber", phoneNumber);
-    formData.append("profilePic", profilePic);
-
+    formData.append("profilePic", file);
+    console.log(formData);
     try {
+      console.log("FormData:", formData.get("profilePic")); // Add this for debugging
+
       const response = await axios.post(
         "http://localhost:3000/api/signup",
         formData,
@@ -73,7 +102,7 @@ export default function Login() {
       <div className="flex items-center justify-center gap-16 overflow-y-auto h-screen mt-8 mb-20 overflow-y-auto">
         <div className=" flex flex-col mt-20  mb-4	items-center justify-center">
           <div className="h-60 w-60 border flex cursor-pointer items-center justify-center border-black rounded-full	">
-            {/* <div
+            <div
               className="upload-container"
               onClick={handleFileInputClick}
               style={{
@@ -88,9 +117,18 @@ export default function Login() {
                 inputRef={fileInputRef}
                 style={{ display: "none" }}
                 accept=".jpg, .png"
+                onChange={handleFileChange}
               />
-              <PhotoCameraIcon style={{ fontSize: "100px", color: "#ccc" }} />
-            </div> */}
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="h-full w-full object-cover rounded-full"
+                />
+              ) : (
+                <PhotoCameraIcon style={{ fontSize: "100px", color: "#ccc" }} />
+              )}
+            </div>
           </div>
           <div className="mt-16">
             <Button
@@ -128,7 +166,7 @@ export default function Login() {
                 fullWidth
               />
             </div>
-            {/* <div className="m-4 w-80">
+            <div className="m-4 w-80">
               <TextField
                 id="outlined-address"
                 label="Address"
@@ -138,7 +176,7 @@ export default function Login() {
                 required
                 fullWidth
               />
-            </div> */}
+            </div>
             <div className="m-4 w-80">
               <TextField
                 id="outlined-password"
@@ -151,7 +189,7 @@ export default function Login() {
                 fullWidth
               />
             </div>
-            {/* <div className="m-4 w-80">
+            <div className="m-4 w-80">
               <TextField
                 id="outlined-number"
                 label="Phone Number"
@@ -161,7 +199,7 @@ export default function Login() {
                 required
                 fullWidth
               />
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

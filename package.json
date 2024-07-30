@@ -4,7 +4,8 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "html-react-parser": "^5.1.12"
+    "html-react-parser": "^5.1.12",
+    "multer": "^1.4.5-lts.1"
   },
   "name": "kyakhanahai.com",
   "version": "1.0.0",

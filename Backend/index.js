@@ -5,6 +5,7 @@ const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose"); //Connects backend to MongoDB
 const multer = require("multer");
+// const path = require("path");
 
 //Used for Authentication
 const passport = require("passport");
@@ -89,18 +90,27 @@ const Dish = mongoose.model("Dish", userFoodSchema);
 /* MODEL FOR THE USER STARTS*/
 const websiteUserSchema = new mongoose.Schema({
   //In this project username & emailId are equivalent (not equal, equivalent)
-  username: {
+  email: {
     type: String,
     required: true,
     unique: true,
   },
+  username: { type: String, required: true, unique: true },
   name: {
     type: String,
     required: true,
   },
+  profile: {
+    firstName: { type: String },
+    lastName: { type: String },
+    address: { type: String },
+    phone: { type: String },
+  },
+  profilePic: { type: String },
+  // orderHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
 });
 
-websiteUserSchema.plugin(passportLocalMongoose, {});
+websiteUserSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 
 const websiteUser = mongoose.model("websiteUser", websiteUserSchema);
 /* MODEL FOR THE USER ENDS */
@@ -112,15 +122,16 @@ passport.use(new LocalStrategy(websiteUser.authenticate()));
 passport.serializeUser(websiteUser.serializeUser());
 passport.deserializeUser(websiteUser.deserializeUser());
 
+// Multer configuration
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
+  destination: function (req, file, cb) {
+    return cb(null, "uploads/");
   },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}_${file.originalname}`); // Append the file extension
   },
 });
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage });
 
 // Middleware to check if the user is authenticated or not. This middleware is used to check actual users information for authentication.
 const isLoggedIn = (req, res, next) => {
@@ -146,23 +157,67 @@ app.get("/api/checkAuth", (req, res) => {
 // This is an endpoint for signingup a user
 app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
   try {
-    const { name, username, password } = req.body;
+    const { name, username, password, address, phoneNumber } = req.body;
+    const [firstName, ...lastNameArr] = name.split(" ");
+    const lastName = lastNameArr.join(" ");
+
     const existingUser = await websiteUser.findOne({ username });
     if (existingUser) {
       return res.status(409).send({ message: "User already registered" });
     }
-    const newUser = new websiteUser({ username, name });
+    const newUser = new websiteUser({
+      name,
+      username, // Ensuring username is set correctly
+      email: username, // Ensuring email is set correctly
+
+      profile: {
+        firstName,
+        lastName,
+        address,
+        phone: phoneNumber,
+      },
+      profilePic: req.file ? req.file.path : null, // Save the photo path
+    });
     await websiteUser.register(newUser, password);
     res.status(200).send({ message: "Signup successful" });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "An error occurred" });
   }
-  const profilePic = req.file;
-
-  res.send(profilePic);
-  console.log(profilePic);
+  // const profilePic = formData.profilePic;
+  // const profilePic = req.file ? req.file.filename : null;
+  console.log(req.body);
+  // res.send(profilePic);
+  // console.log(profilePic, 1);
 });
+
+app.delete("/delete-file", async (req, res) => {
+  const filePath = req.body.filePath;
+  fs.unlink(path.join(__dirname, "..", filePath), (err) => {
+    if (err) {
+      console.error("Error deleting file:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json({ message: "File deleted successfully" });
+  });
+});
+
+// app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
+//   try {
+//     const { name, username, password, address, phoneNumber } = req.body;
+//     const profilePic = req.file ? req.file.filename : null;
+
+//     console.log("Received form data:", req.body);
+//     console.log("Received file:", req.file);
+
+//     // Here you can handle the user signup logic, such as saving the data to the database
+
+//     res.status(200).send({ message: "Signup successful", profilePic });
+//   } catch (error) {
+//     console.error("Error signing up:", error);
+//     res.status(500).send({ message: "An error occurred" });
+//   }
+// });
 
 // This is an endpoint for logging in the user
 app.post("/api/login", (req, res, next) => {

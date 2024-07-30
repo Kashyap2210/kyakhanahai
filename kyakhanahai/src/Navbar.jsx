@@ -27,7 +27,7 @@ export default function Navbar() {
     };
 
     checkAuth(); //Function is called to check the authentication
-    const intervalId = setInterval(checkAuth, 1000); //Sets periodic timer that calls checkAuth every second.
+    const intervalId = setInterval(checkAuth, 100000); //Sets periodic timer that calls checkAuth every second.
     return () => clearInterval(intervalId); //Cleanup function to clear the interval
   }, []);
 
