@@ -12,6 +12,7 @@ import Adddish from "./Adddish";
 import Showdish from "./Showdish";
 import Getdish from "./Getdish";
 import Checkplaces from "./Checkplaces";
+import Profile from "./Profile";
 
 const router = createBrowserRouter([
   // "createBrowserRouter" is used to create a router object with route definitions.
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: "/showdish", element: <Showdish /> },
       { path: "/getdish", element: <Getdish /> },
       { path: "/checkplaces", element: <Checkplaces /> },
+      { path: "/profile", element: <Profile /> },
     ],
   },
 ]);

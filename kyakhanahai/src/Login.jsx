@@ -1,17 +1,19 @@
 // THis is the login component
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoginIcon from "@mui/icons-material/Login";
 import "./index.css";
+import UserProfileContext from "../Context/UserContext";
 
 export default function Login() {
   const [username, setUsername] = useState(""); //Username is stored as state variable
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setUserDetails } = useContext(UserProfileContext); // Get context setter function
 
   const handleSubmit = async (e) => {
     //Submit handler for login form
@@ -33,6 +35,15 @@ export default function Login() {
       );
 
       if (response.status === 200) {
+        // Fetch user details
+        const userResponse = await axios.get("http://localhost:3000/api/user", {
+          withCredentials: true,
+        });
+
+        // Update context with user details
+        console.log(userResponse.data);
+        setUserDetails(userResponse.data);
+
         navigate("/");
         console.log("Login Successful");
       } else {

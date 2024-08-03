@@ -67,9 +67,11 @@ export default function Navbar() {
         </Link>
         {isAuthenticated ? (
           // COnditional rendering based on the state variable value
-          <Link onClick={handleLogout}>
-            <Navbarelements title={"Logout"} />
-          </Link>
+          <div>
+            <Link onClick={handleLogout}>
+              <Navbarelements title={"Logout"} />
+            </Link>
+          </div>
         ) : (
           <>
             <Link to="/login">
@@ -79,6 +81,16 @@ export default function Navbar() {
               <Navbarelements title={"Signup"} />
             </Link>
           </>
+        )}
+        {isAuthenticated ? (
+          // COnditional rendering based on the state variable value
+          <div>
+            <Link to="/profile">
+              <Navbarelements title={"Profile"} />
+            </Link>
+          </div>
+        ) : (
+          <></>
         )}
       </div>
     </div>

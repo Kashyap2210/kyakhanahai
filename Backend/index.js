@@ -5,7 +5,7 @@ const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose"); //Connects backend to MongoDB
 const multer = require("multer");
-// const path = require("path");
+const path = require("path");
 
 //Used for Authentication
 const passport = require("passport");
@@ -35,6 +35,8 @@ app.options(
 );
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ message: "Something went wrong!" });
@@ -89,25 +91,18 @@ const Dish = mongoose.model("Dish", userFoodSchema);
 
 /* MODEL FOR THE USER STARTS*/
 const websiteUserSchema = new mongoose.Schema({
-  //In this project username & emailId are equivalent (not equal, equivalent)
   email: {
     type: String,
     required: true,
     unique: true,
   },
   username: { type: String, required: true, unique: true },
-  name: {
-    type: String,
-    required: true,
-  },
+  name: { type: String, required: true },
   profile: {
-    firstName: { type: String },
-    lastName: { type: String },
     address: { type: String },
     phone: { type: String },
   },
   profilePic: { type: String },
-  // orderHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
 });
 
 websiteUserSchema.plugin(passportLocalMongoose, { usernameField: "email" });
@@ -155,40 +150,50 @@ app.get("/api/checkAuth", (req, res) => {
 });
 
 // This is an endpoint for signingup a user
+// Signup route
 app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
-  try {
-    const { name, username, password, address, phoneNumber } = req.body;
-    const [firstName, ...lastNameArr] = name.split(" ");
-    const lastName = lastNameArr.join(" ");
+  const { username, password, name, address, phoneNumber } = req.body;
+  const profilePic = req.file ? req.file.path : null;
 
+  try {
     const existingUser = await websiteUser.findOne({ username });
     if (existingUser) {
-      return res.status(409).send({ message: "User already registered" });
+      return res.status(409).json({ message: "User already registered" });
     }
-    const newUser = new websiteUser({
-      name,
-      username, // Ensuring username is set correctly
-      email: username, // Ensuring email is set correctly
 
+    const newUser = new websiteUser({
+      email: username,
+      username,
+      name,
       profile: {
-        firstName,
-        lastName,
         address,
         phone: phoneNumber,
       },
-      profilePic: req.file ? req.file.path : null, // Save the photo path
+      profilePic,
     });
+
     await websiteUser.register(newUser, password);
-    res.status(200).send({ message: "Signup successful" });
+    console.log(newUser);
+    // Authenticate the user
+    req.login(newUser, (err) => {
+      if (err) {
+        console.error("Error during login:", err);
+        return res.status(500).json({ message: "Login error" });
+      }
+      const { email, username, name, profile, profilePic } = newUser;
+      res.status(200).json({
+        email,
+        username,
+        name,
+        address: profile.address,
+        phoneNumber: profile.phone,
+        profilePic,
+      });
+    });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: "An error occurred" });
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Signup error" });
   }
-  // const profilePic = formData.profilePic;
-  // const profilePic = req.file ? req.file.filename : null;
-  console.log(req.body);
-  // res.send(profilePic);
-  // console.log(profilePic, 1);
 });
 
 app.delete("/delete-file", async (req, res) => {
@@ -201,23 +206,6 @@ app.delete("/delete-file", async (req, res) => {
     res.status(200).json({ message: "File deleted successfully" });
   });
 });
-
-// app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
-//   try {
-//     const { name, username, password, address, phoneNumber } = req.body;
-//     const profilePic = req.file ? req.file.filename : null;
-
-//     console.log("Received form data:", req.body);
-//     console.log("Received file:", req.file);
-
-//     // Here you can handle the user signup logic, such as saving the data to the database
-
-//     res.status(200).send({ message: "Signup successful", profilePic });
-//   } catch (error) {
-//     console.error("Error signing up:", error);
-//     res.status(500).send({ message: "An error occurred" });
-//   }
-// });
 
 // This is an endpoint for logging in the user
 app.post("/api/login", (req, res, next) => {
@@ -237,6 +225,23 @@ app.post("/api/login", (req, res, next) => {
     });
   })(req, res, next);
   console.log("User Successfully Logged In");
+});
+
+app.get("/api/user", isLoggedIn, async (req, res) => {
+  try {
+    // Assuming user ID is stored in session or token
+    const userId = req.user._id; // Example: req.user is set by authentication middleware
+    const user = await websiteUser.findById(userId).select("-password"); // Exclude password from response
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    res.status(200).send(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "An error occurred" });
+  }
 });
 
 // This is an endpoint to add dish to DB and store it with Specific user details.
@@ -374,6 +379,23 @@ app.post("/api/logout", (req, res, next) => {
   });
 });
 
+app.delete("/api/delete", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log(userId);
+    const userToBeDeleted = await websiteUser.findById(userId);
+    console.log(userToBeDeleted);
+    if (!userToBeDeleted) {
+      return res.status(404).send("User not found");
+    }
+    await websiteUser.findByIdAndDelete(userId);
+    res.status(200).send("User Deleted");
+    console.log("Account Deleted, Response Sent");
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).send("An error occurred");
+  }
+});
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

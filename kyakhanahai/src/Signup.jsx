@@ -1,6 +1,6 @@
 // THis component renders the signup page and submits user details to the DataBase
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
@@ -8,19 +8,28 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import UserProfileContext from "../Context/UserContext";
 
 export default function Signup() {
+  const { userDetails, setUserDetails } = useContext(UserProfileContext);
+
+  if (!userDetails) {
+    console.error("UserDetails is undefined");
+    return null; // Handle undefined case or show an error message
+  }
+
   const fileInputRef = useRef(null);
 
   const handleFileInputClick = () => {
     fileInputRef.current.click();
   };
 
+  // Function to handle file change
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    setFile(selectedFile);
     if (selectedFile) {
-      setPreviewUrl(URL.createObjectURL(selectedFile)); // **Change made here**
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile)); // Create a preview URL for the file
     }
   };
 
@@ -60,12 +69,26 @@ export default function Signup() {
     e.preventDefault();
 
     const formData = new FormData();
+    // Log to verify data being appended
+    console.log("Appending form data:", {
+      username: username || "N/A",
+      password: password || "N/A",
+      name: name || "N/A",
+      address: address || "N/A",
+      phoneNumber: phoneNumber || "N/A",
+      file: file ? file.name : "No file",
+    });
+
     formData.append("username", username);
     formData.append("password", password);
     formData.append("name", name);
     formData.append("address", address);
     formData.append("phoneNumber", phoneNumber);
-    formData.append("profilePic", file);
+    if (file) {
+      console.log("Appending file to formData:", file); // Add this
+      formData.append("profilePic", file);
+    }
+
     console.log(formData);
     try {
       console.log("FormData:", formData.get("profilePic")); // Add this for debugging
@@ -84,6 +107,16 @@ export default function Signup() {
       console.log(response.data); // Log the response data (including req.file)
 
       if (response.status === 200) {
+        console.log(response.data);
+        const { username, name, address, phoneNumber, file } = response.data;
+        // Update context with response data
+        setUserDetails({
+          username,
+          name,
+          address,
+          phoneNumber,
+          profilePic: file,
+        });
         alert("You have successfully signed up");
         navigate("/");
       }
