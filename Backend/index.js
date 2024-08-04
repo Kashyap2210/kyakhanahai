@@ -379,6 +379,7 @@ app.post("/api/logout", (req, res, next) => {
   });
 });
 
+//This is an endpoint to DELETE user
 app.delete("/api/delete", async (req, res) => {
   try {
     const { userId } = req.body;
@@ -396,6 +397,7 @@ app.delete("/api/delete", async (req, res) => {
     res.status(500).send("An error occurred");
   }
 });
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

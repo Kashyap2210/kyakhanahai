@@ -1,6 +1,6 @@
 //This component shows all the dish that user has added and gives them an option to delete the dish
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,11 @@ export default function Showdish() {
   const navigate = useNavigate();
   const location = useLocation(); //Allows us to access the state passed to IDBTransaction, i.e. the dishes
   const dishes = location.state?.dishes || [];
+
+  useEffect(() => {
+    // Fetch dishes when the component mounts
+    showRemainingDishes();
+  }, []);
 
   const deleteDish = async (id) => {
     //Function to delete a dish from the database
