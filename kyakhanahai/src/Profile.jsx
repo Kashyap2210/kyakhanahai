@@ -70,7 +70,7 @@ export default function Profile() {
 
   return (
     // This is the grand container div
-    <div className="container h-screen py-20 px-20 flex gap-8 items-center align-center justify-center	">
+    <div className="container h-screen py-20 px-20 flex  items-center align-center justify-center	">
       {" "}
       {/* LHS Section Starts Here */}
       <div className="lhs-side  flex gap-4 flex-col items-center align-center  w-1/2">
@@ -90,7 +90,7 @@ export default function Profile() {
       </div>
       {/* LHS Section Ends Here */}
       {/* RHS Section Starts Here */}
-      <div className="rhs-side border-2	border-black h-100 flex gap-12 flex-col items-center align-center w-1/2">
+      <div className="rhs-side h-100 flex gap-12 flex-col items-center align-center w-1/2">
         <div className="text-4xl">
           <PinDropIcon sx={{ fontSize: 36, lineHeight: 40 }} />
           {userDetails.profile?.address || "Not available"}

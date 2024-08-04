@@ -1,5 +1,3 @@
-// THis component renders the signup page and submits user details to the DataBase
-
 import React, { useState, useRef, useEffect, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -132,52 +130,52 @@ export default function Signup() {
 
   return (
     <form action="" encType="multipart/form-data" onSubmit={handleSubmit}>
-      <div className="flex items-center justify-center gap-16 overflow-y-auto h-screen mt-8 mb-20 overflow-y-auto">
-        <div className=" flex flex-col mt-20  mb-4	items-center justify-center">
-          <div className="h-60 w-60 border flex cursor-pointer items-center justify-center border-black rounded-full	">
+      <div className="flex items-center justify-center gap-16 overflow-y-auto h-screen mt-8 mb-20">
+        <div className="flex flex-col  mb-4 items-center justify-center">
+          {/* Container for Image Preview */}
+          <div className="relative w-60 h-60 flex cursor-pointer items-center justify-center rounded-full">
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              name="profilePic"
+              ref={fileInputRef}
+              className="absolute inset-0 opacity-0 cursor-pointer" // Hidden but clickable
+              accept=".jpg, .png"
+              onChange={handleFileChange}
+            />
             <div
-              className="upload-container"
+              className="w-full h-full flex items-center justify-center overflow-hidden"
               onClick={handleFileInputClick}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
             >
-              <TextField
-                name="profilePic"
-                type="file"
-                inputRef={fileInputRef}
-                style={{ display: "none" }}
-                accept=".jpg, .png"
-                onChange={handleFileChange}
-              />
               {previewUrl ? (
                 <img
                   src={previewUrl}
                   alt="Preview"
-                  className="h-full w-full object-cover rounded-full"
+                  className="w-full h-full object-cover rounded-full" // Ensure 1:1 aspect ratio
                 />
               ) : (
-                <PhotoCameraIcon style={{ fontSize: "100px", color: "#ccc" }} />
+                <PhotoCameraIcon
+                  className="text-gray-300"
+                  sx={{ fontSize: 80 }}
+                />
               )}
             </div>
           </div>
-          <div className="mt-16">
+          <div className="mt-8">
             <Button
               variant="contained"
               color="secondary"
               type="submit"
               className="w-full"
             >
-              <FollowTheSignsIcon></FollowTheSignsIcon>
-              &nbsp;&nbsp;&nbsp;Signup
+              <FollowTheSignsIcon className="mr-2" />
+              Signup
             </Button>
           </div>
         </div>
         <div>
           <div className="text-center flex-col flex justify-center items-center">
-            <div className="m-4 w-80 z-1000">
+            <div className="m-4 w-80 z-10">
               <TextField
                 id="outlined-name"
                 label="Full Name"
