@@ -100,6 +100,7 @@ const websiteUserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   profile: {
     address: { type: String },
+    locality: { type: String },
     phone: { type: String },
   },
   profilePic: { type: String },
@@ -152,7 +153,7 @@ app.get("/api/checkAuth", (req, res) => {
 // This is an endpoint for signingup a user
 // Signup route
 app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
-  const { username, password, name, address, phoneNumber } = req.body;
+  const { username, password, name, address, phoneNumber, locality } = req.body;
   const profilePic = req.file ? req.file.path : null;
 
   try {
@@ -167,6 +168,7 @@ app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
       name,
       profile: {
         address,
+        locality,
         phone: phoneNumber,
       },
       profilePic,
@@ -180,12 +182,13 @@ app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
         console.error("Error during login:", err);
         return res.status(500).json({ message: "Login error" });
       }
-      const { email, username, name, profile, profilePic } = newUser;
+      const { email, username, name, profile, profilePic, locality } = newUser;
       res.status(200).json({
         email,
         username,
         name,
         address: profile.address,
+        locality: profile.locality,
         phoneNumber: profile.phone,
         profilePic,
       });

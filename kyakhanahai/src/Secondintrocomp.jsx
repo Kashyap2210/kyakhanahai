@@ -10,6 +10,18 @@ export default function Secondintrocomp() {
   const showDish = async (e) => {
     e.preventDefault();
     try {
+      const authResponse = await axios.get(
+        "http://localhost:3000/api/checkAuth",
+        {
+          withCredentials: true,
+        }
+      );
+      if (!authResponse.data.authenticated) {
+        // Redirect to login page if not authenticated
+        alert("Please Login To See What Your Dishes");
+        navigate("/login");
+        return;
+      }
       console.log("inside try block");
       const response = await axios.get("http://localhost:3000/api/showdish", {
         //Response sent to the backend

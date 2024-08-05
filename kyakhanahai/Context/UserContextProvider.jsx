@@ -10,6 +10,7 @@ export const UserProfileContextProvider = ({ children }) => {
     phoneNumber: "",
     file: null,
     previewUrl: null,
+    locality: "",
   });
 
   return (

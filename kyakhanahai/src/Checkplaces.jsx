@@ -1,7 +1,7 @@
 // This element is used to show all the restaurants in the vicinity of the users Location.
 // There is also an option to directly search the generated dish on Zomato
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
@@ -14,18 +14,20 @@ import {
 import "./index.css";
 import Hotelcard from "./Hotelcard"; //This is a card to show all the hotels in the nearby region
 import Button from "@mui/material/Button";
+import UserProfileContext from "../Context/UserContext";
 
 const ZOMATO_URL = "https://www.zomato.com/"; //This is the base Zomato URL
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API; //This is the API key for places API and Google Maps API
 
 export default function Checkplaces() {
   const location = useLocation();
+  const { userDetails } = useContext(UserProfileContext);
+  console.log(userDetails);
   const { userLocation, dish } = location.state || {};
   const [restaurants, setRestaurants] = useState([]); //Stores restaurant details
   const [map, setMap] = useState(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null); //Stores value of selected restaurant
   const [city, setCity] = useState(null); //Stores value of city
-  const [locality, setLocality] = useState(null);
 
   //Google Places API Functions
   const { isLoaded } = useJsApiLoader({
@@ -73,21 +75,21 @@ export default function Checkplaces() {
         const addressComponents =
           response.data.results[0]?.address_components || [];
 
-        let localityComponent = addressComponents.find(
-          //THis is the component for locality, like kandivali-west, malad-west, etc
-          (component) =>
-            component.types.includes("sublocality_level_1") ||
-            component.types.includes("locality")
-        );
+        // let localityComponent = addressComponents.find(
+        //   //THis is the component for locality, like kandivali-west, malad-west, etc
+        //   (component) =>
+        //     component.types.includes("sublocality_level_1") ||
+        //     component.types.includes("locality")
+        // );
 
-        // If localityComponent is not found, search for sublocality or neighborhood
-        if (!localityComponent) {
-          localityComponent = addressComponents.find(
-            (component) =>
-              component.types.includes("sublocality") ||
-              component.types.includes("neighborhood")
-          );
-        }
+        // // If localityComponent is not found, search for sublocality or neighborhood
+        // if (!localityComponent) {
+        //   localityComponent = addressComponents.find(
+        //     (component) =>
+        //       component.types.includes("sublocality") ||
+        //       component.types.includes("neighborhood")
+        //   );
+        // }
 
         let cityComponent = addressComponents.find(
           //THis locates the city of the location
@@ -107,31 +109,31 @@ export default function Checkplaces() {
           );
         }
 
-        let locality = localityComponent
-          ? // Locality& city from places API comes as Malad west so we need to convert that to Malad-west to use it in the Zomato url
-            localityComponent.long_name.replace(/\s+/g, "-")
-          : "Locality not found";
+        // let locality = localityComponent
+        //   ? // Locality& city from places API comes as Malad west so we need to convert that to Malad-west to use it in the Zomato url
+        //     localityComponent.long_name.replace(/\s+/g, "-")
+        //   : "Locality not found";
         let city = cityComponent
           ? cityComponent.long_name.replace(/\s+/g, "-")
           : "City not found";
 
-        locality = locality.toLowerCase();
+        // locality = locality.toLowerCase();
         city = city.toLowerCase();
 
         setCity(city); //Added city value to the state variable
-        setLocality(locality); //Added locality value to the state variable
-        return { locality, city };
+
+        return { city };
       } else {
         console.error("Geocoding API Error:", response.data.status);
         return {
-          locality: "Error fetching locality",
+          // locality: "Error fetching locality",
           city: "Error fetching city",
         };
       }
     } catch (error) {
       console.error("Error fetching location details:", error);
       return {
-        locality: "Error fetching locality",
+        // locality: "Error fetching locality",
         city: "Error fetching city",
       };
     }
@@ -142,9 +144,10 @@ export default function Checkplaces() {
     console.log("Handle Order Click is clicked");
     if (city && dish) {
       console.log("Going to zomato");
-      console.log(locality);
+      // console.log(locality);
       console.log(city);
-      const searchUrl = `${ZOMATO_URL}${city}/restaurants/dish-${dish.name}`;
+      console.log(userDetails.locality, 1);
+      const searchUrl = `${ZOMATO_URL}${city}/${userDetails.locality}-restaurants/dish-${dish.name}`;
       console.log(searchUrl);
       window.open(searchUrl, "_blank");
     }

@@ -35,6 +35,7 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [locality, setLocality] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [file, setFile] = useState();
@@ -80,6 +81,7 @@ export default function Signup() {
     formData.append("username", username);
     formData.append("password", password);
     formData.append("name", name);
+    formData.append("locality", locality);
     formData.append("address", address);
     formData.append("phoneNumber", phoneNumber);
     if (file) {
@@ -114,6 +116,7 @@ export default function Signup() {
           address,
           phoneNumber,
           profilePic: file,
+          locality,
         });
         alert("You have successfully signed up");
         navigate("/");
@@ -193,6 +196,17 @@ export default function Signup() {
                 variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                required
+                fullWidth
+              />
+            </div>
+            <div className="m-4 w-80">
+              <TextField
+                id="outlined-locality"
+                label="Locality (kandivali-west,malad-west)"
+                variant="outlined"
+                value={locality}
+                onChange={(e) => setLocality(e.target.value)}
                 required
                 fullWidth
               />
