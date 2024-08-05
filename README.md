@@ -19,6 +19,8 @@ The project includes user authentication and basic CRUD operations for a user pr
 - Random meal generator
 - Directly order the generated meal on Zomato
 - Seeing nearby restaurants in your locality via Google Maps
+- See their personal profile information
+- Delete their account
 
 ## Technologies
 
@@ -31,8 +33,6 @@ The project includes user authentication and basic CRUD operations for a user pr
 - Google Cloud API (Places API & Geocoding API)
 - Git & GitHub
 
-## Folder Structure
-
 ### API Endpoints
 
 - `/api/signup`: Registers a new user
@@ -44,6 +44,7 @@ The project includes user authentication and basic CRUD operations for a user pr
 - `/api/getdish`: Generates a random dish from the dish database
 - `/api/getNearbyRestaurants`: Gives information on nearby restaurants to the user’s location
 - `/api/logout`: Logs the user out
+- `/api/deleteaAccount`: Deletes the user account
 
 ### Frontend Overview
 
@@ -69,6 +70,7 @@ The project includes user authentication and basic CRUD operations for a user pr
 - Showdish.jsx
 - Signup.jsx
 - Thirdintrocomp.jsx
+- Profile.jsx
 
 ### Backend Overview
 

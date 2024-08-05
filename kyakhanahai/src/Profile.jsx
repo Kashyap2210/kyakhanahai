@@ -52,7 +52,7 @@ export default function Profile() {
   const deleteUser = async () => {
     try {
       const deleteAccount = await axios.delete(
-        "http://localhost:3000/api/delete",
+        "http://localhost:3000/api/deleteaccount",
         {
           data: { userId: userDetails._id }, // Sending additional data
           withCredentials: true,

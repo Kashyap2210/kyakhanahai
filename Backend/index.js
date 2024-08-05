@@ -380,7 +380,7 @@ app.post("/api/logout", (req, res, next) => {
 });
 
 //This is an endpoint to DELETE user
-app.delete("/api/delete", async (req, res) => {
+app.delete("/api/deleteaccount", async (req, res) => {
   try {
     const { userId } = req.body;
     console.log(userId);
