@@ -32,6 +32,7 @@ The project includes user authentication and basic CRUD operations for a user pr
 - Tailwind CSS
 - Google Cloud API (Places API & Geocoding API)
 - Git & GitHub
+- Context API
 
 ### API Endpoints
 
