@@ -95,6 +95,10 @@ export default function Profile() {
           <PinDropIcon sx={{ fontSize: 36, lineHeight: 40 }} />
           {userDetails.profile?.address || "Not available"}
         </div>
+        <div className="text-4xl">
+          <PinDropIcon sx={{ fontSize: 36, lineHeight: 40 }} />
+          Locality: {userDetails.profile?.locality || "Not available"}
+        </div>
         <div className="text-xl font-normal	">
           <PhoneIcon sx={{ marginRight: 1 }} />
           {userDetails.profile?.phone || "Not available"}
