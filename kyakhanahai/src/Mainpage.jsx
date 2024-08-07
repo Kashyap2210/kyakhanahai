@@ -5,6 +5,7 @@ import Firstintrocomp from "./Firstintrocomp.jsx";
 import Secondintrocomp from "./Secondintrocomp.jsx";
 import Thirdintrocomp from "./Thirdintrocomp.jsx";
 import { UserProfileContextProvider } from "../Context/UserContextProvider.jsx";
+import Footer from "./Footer.jsx";
 
 export default function Mainpage() {
   return (
@@ -12,6 +13,7 @@ export default function Mainpage() {
       <Firstintrocomp />
       <Secondintrocomp />
       <Thirdintrocomp />
+      <Footer />
     </UserProfileContextProvider>
   );
 }

@@ -7,7 +7,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 
 export default function Footer() {
   return (
-    <div className="border-t border-gray-500 h-20 bg-white z-9999 text-white flex flex-col justify-center items-center transition-all duration-150 w-full fixed bottom-0 opacity-100  ">
+    <div className="border-t border-gray-500 h-20 bg-white z-9999 text-white flex flex-col justify-center items-center transition-all duration-150 w-full  opacity-100  ">
       <div className="flex gap-12 z-9999">
         <div>
           <a

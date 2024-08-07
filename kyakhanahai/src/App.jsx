@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 import UserProfileContextProvider from "../Context/UserContextProvider";
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
       <Navbar />
       <Outlet />
       {/* Outlet allows us to change the maincontent of the page and populate different components. Outlet manages the nested routing in our code */}
-      <Footer />
+      {/* <Footer /> */}
     </UserProfileContextProvider>
   );
 }
