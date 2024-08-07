@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .main-content {
-  height: calc(100vh - 5rem); /* Adjust the height based on the navbar height */
+  height: calc(100vh - 4rem); /* Adjust the height based on the navbar height */
 }
 
 .navbar {
@@ -12,4 +12,10 @@
 .mapBox {
   flex: 2 !important;
   overflow: auto !important;
+}
+
+.glass {
+  /* background: rgb(240 171 252); */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }

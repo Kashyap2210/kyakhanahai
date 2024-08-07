@@ -50,48 +50,48 @@ export default function Navbar() {
   };
 
   return (
-    <div
-      className={
-        "navbar bg-white border-b border-gray-500 h-20 flex justify-between items-center text-2xl font-bold fixed top-0 w-full opacity-100"
-      }
-    >
-      <div className=" text-center">
-        <Link to="/">
-          {/* Navbarelements are seperate elements for displaying on the navbar. Which Navbarelement will be displayed will depend on the state variable isAuthenticated */}
-          <Navbarelements title={`@kyakhanahai.com`} />
-        </Link>
-      </div>
-      <div className="flex justify-between items-center text-center pr-8">
-        <Link to="/">
-          <Navbarelements title={"About"} />
-        </Link>
-        {isAuthenticated ? (
-          // COnditional rendering based on the state variable value
-          <div>
-            <Link onClick={handleLogout}>
-              <Navbarelements title={"Logout"} />
+    <div className="navbar glass sticky top-0  pt-4">
+      <div className={" bg-fuchsia-700 ml-16 mr-16  rounded-3xl"}>
+        <div className="h-12 flex justify-between items-center  text-xl font-bold">
+          <div className=" text-center">
+            <Link to="/">
+              {/* Navbarelements are seperate elements for displaying on the navbar. Which Navbarelement will be displayed will depend on the state variable isAuthenticated */}
+              <Navbarelements title={`@kyakhanahai.com`} />
             </Link>
           </div>
-        ) : (
-          <>
-            <Link to="/login">
-              <Navbarelements title={"Login"} />
+          <div className="flex justify-between items-center text-center pr-8">
+            <Link to="/">
+              <Navbarelements title={"About"} />
             </Link>
-            <Link to="/signup">
-              <Navbarelements title={"Signup"} />
-            </Link>
-          </>
-        )}
-        {isAuthenticated ? (
-          // COnditional rendering based on the state variable value
-          <div>
-            <Link to="/profile">
-              <Navbarelements title={"Profile"} />
-            </Link>
+            {isAuthenticated ? (
+              // COnditional rendering based on the state variable value
+              <div>
+                <Link onClick={handleLogout}>
+                  <Navbarelements title={"Logout"} />
+                </Link>
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Navbarelements title={"Login"} />
+                </Link>
+                <Link to="/signup">
+                  <Navbarelements title={"Signup"} />
+                </Link>
+              </>
+            )}
+            {isAuthenticated ? (
+              // COnditional rendering based on the state variable value
+              <div>
+                <Link to="/profile">
+                  <Navbarelements title={"Profile"} />
+                </Link>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
-        ) : (
-          <></>
-        )}
+        </div>
       </div>
     </div>
   );
