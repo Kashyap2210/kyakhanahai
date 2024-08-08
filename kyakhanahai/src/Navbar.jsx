@@ -39,39 +39,6 @@ export default function Navbar() {
     return () => clearInterval(intervalId); //Cleanup function to clear the interval
   }, []);
 
-  // useEffect(() => {
-  //   const fetchUserDetails = async () => {
-  //     try {
-  //       const userResponse = await axios.get("http://localhost:3000/api/user", {
-  //         withCredentials: true,
-  //       });
-  //       console.log(userResponse.data);
-  //       // Update context with user details
-  //       setUserDetails(userResponse.data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error("Error fetching user details:", error);
-  //       setLoading(false);
-  //       navigate("/"); // Redirect to home if there's an error
-  //     }
-  //   };
-
-  //   // Fetch user details if not already present
-  //   if (!userDetails) {
-  //     fetchUserDetails();
-  //   } else {
-  //     setLoading(false);
-  //   }
-  // }, [userDetails, setUserDetails, navigate]);
-
-  // if (loading) {
-  //   return <p>Loading...</p>;
-  // }
-
-  // if (!userDetails || !userDetails.username) {
-  //   return <p>No user details available. Please log in again.</p>; // Redirect or show message
-  // }
-
   const handleLogout = async () => {
     //Function to log out the user & also sets the state of isAuthenticated to false
     console.log("Logout Request Sent From Frontend");

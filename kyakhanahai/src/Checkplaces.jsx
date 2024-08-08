@@ -139,6 +139,8 @@ export default function Checkplaces() {
     }
   };
 
+  console.log(userDetails);
+
   const handleOrderClick = () => {
     //Onclick function to redirect to the Zomato page with the city and dish
     console.log("Handle Order Click is clicked");
@@ -147,7 +149,7 @@ export default function Checkplaces() {
       // console.log(locality);
       console.log(city);
       console.log(userDetails.locality, 1);
-      const searchUrl = `${ZOMATO_URL}${city}/${userDetails.locality}-restaurants/dish-${dish.name}`;
+      const searchUrl = `${ZOMATO_URL}${city}/${userDetails.profile.locality}-restaurants/dish-${dish.name}`;
       console.log(searchUrl);
       window.open(searchUrl, "_blank");
     }
@@ -177,7 +179,7 @@ export default function Checkplaces() {
   };
 
   return (
-    <div className="h-full pb-60 flex flex-col justify-center items-center mt-20 overscroll-auto">
+    <div className="h-full pb-60 flex flex-col justify-center items-center mt-8 overscroll-auto">
       <div className="flex  justify-center items-center mt-12 gap-64">
         {/* Flexbox for location and Map Details */}
         <div>

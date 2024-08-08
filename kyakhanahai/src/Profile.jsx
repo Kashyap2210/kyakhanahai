@@ -9,8 +9,9 @@ import { Link } from "react-router-dom"; //Link is used to give useNavigate a li
 
 export default function Profile() {
   const { userDetails, setUserDetails } = useContext(UserProfileContext);
+  console.log(userDetails);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -21,28 +22,27 @@ export default function Profile() {
         console.log(userResponse.data);
         // Update context with user details
         setUserDetails(userResponse.data);
-        setLoading(false);
+        // setLoading(false);
       } catch (error) {
         console.error("Error fetching user details:", error);
-        setLoading(false);
+        // setLoading(false);
         navigate("/"); // Redirect to home if there's an error
       }
     };
 
     // Fetch user details if not already present
-    if (!userDetails) {
-      fetchUserDetails();
-    } else {
-      setLoading(false);
-    }
-  }, [userDetails, setUserDetails, navigate]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+    fetchUserDetails();
+    const intervalId = setInterval(fetchUserDetails, 500); //Sets periodic timer that calls checkAuth every second.
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
 
   if (!userDetails || !userDetails.username) {
-    return <p>No user details available. Please log in again.</p>; // Redirect or show message
+    return <p className="text-white">Please log in again.</p>; // Redirect or show message
   }
 
   const profilePicUrl = userDetails.profilePic
