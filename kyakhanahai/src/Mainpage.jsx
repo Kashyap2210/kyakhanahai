@@ -10,11 +10,11 @@ import "./index.css";
 
 export default function Mainpage() {
   return (
-    <UserProfileContextProvider>
+    <>
       <Firstintrocomp />
       <Secondintrocomp />
       <Thirdintrocomp />
       <Footer />
-    </UserProfileContextProvider>
+    </>
   );
 }

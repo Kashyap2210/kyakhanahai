@@ -33,7 +33,7 @@ export default function Profile() {
     // Fetch user details if not already present
 
     fetchUserDetails();
-    const intervalId = setInterval(fetchUserDetails, 500); //Sets periodic timer that calls checkAuth every second.
+    const intervalId = setInterval(fetchUserDetails, 1000); //Sets periodic timer that calls checkAuth every second.
     return () => clearInterval(intervalId);
   }, []);
 

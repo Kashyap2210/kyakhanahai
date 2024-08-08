@@ -1,6 +1,4 @@
-// THis is the login component
-
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
@@ -10,22 +8,23 @@ import "./index.css";
 import UserProfileContext from "../Context/UserContext";
 
 export default function Login() {
-  const [username, setUsername] = useState(""); //Username is stored as state variable
+  const [username, setUsername] = useState(""); // Username is stored as state variable
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setUserDetails } = useContext(UserProfileContext); // Get context setter function
+  const { userDetails, setUserDetails } = useContext(UserProfileContext); // Get context setter function
+
+  useEffect(() => {
+    if (userDetails) {
+      console.log("User details available in Signup:", userDetails);
+    }
+  }, [userDetails]);
 
   const handleSubmit = async (e) => {
-    //Submit handler for login form
-    // console.log(username, password);
     e.preventDefault();
     try {
       const response = await axios.post(
         "http://localhost:3000/api/login",
-        {
-          username,
-          password,
-        },
+        { username, password },
         {
           headers: {
             "Content-Type": "application/json",
@@ -40,12 +39,11 @@ export default function Login() {
           withCredentials: true,
         });
 
-        // Update context with user details
-        console.log(userResponse.data);
+        // Update context and localStorage with user details
         setUserDetails(userResponse.data);
+        localStorage.setItem("userDetails", JSON.stringify(userResponse.data));
 
-        navigate("/");
-        console.log("Login Successful");
+        navigate("/"); // Redirect to homepage after successful login
       } else {
         console.log("Login failed");
       }
@@ -56,13 +54,13 @@ export default function Login() {
   };
 
   return (
-    <div className="login-form text-center h-screen flex  justify-center pt-20 w-fill	">
+    <div className="login-form text-center h-screen flex justify-center pt-20 w-full">
       <hr />
       <form onSubmit={handleSubmit}>
         <div className="m-8 w-80">
           <TextField
             id="outlined-username"
-            label="email-Id"
+            label="Email-Id"
             variant="outlined"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -89,7 +87,8 @@ export default function Login() {
             type="submit"
             className="w-full"
           >
-            <LoginIcon></LoginIcon>&nbsp;&nbsp;&nbsp;Login
+            <LoginIcon />
+            &nbsp;&nbsp;&nbsp;Login
           </Button>
         </div>
       </form>

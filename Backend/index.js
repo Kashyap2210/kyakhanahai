@@ -261,7 +261,7 @@ app.post("/api/adddish", isLoggedIn, async (req, res) => {
   } else {
     newId = 1;
   }
-  console.log(newId);
+  console.log(newId, "newID");
   // console.log("name=", name);
   // console.log("category=", category);
   // console.log("type=", type);

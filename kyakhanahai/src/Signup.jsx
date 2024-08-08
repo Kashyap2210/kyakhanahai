@@ -10,89 +10,80 @@ import UserProfileContext from "../Context/UserContext";
 
 export default function Signup() {
   const { userDetails, setUserDetails } = useContext(UserProfileContext);
-
-  if (!userDetails) {
-    console.error("UserDetails is undefined");
-    return null; // Handle undefined case or show an error message
-  }
-
   const fileInputRef = useRef(null);
-
-  const handleFileInputClick = () => {
-    fileInputRef.current.click();
-  };
-
-  // Function to handle file change
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setPreviewUrl(URL.createObjectURL(selectedFile)); // Create a preview URL for the file
-    }
-  };
-
-  // User details taken as state
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [locality, setLocality] = useState("");
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [file, setFile] = useState();
-  const [previewUrl, setPreviewUrl] = useState(null);
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleBeforeUnload = async (event) => {
-      if (file) {
-        event.preventDefault();
+    if (userDetails) {
+      console.log("User details available in Signup:", userDetails);
+    }
+  }, [userDetails]);
+
+  const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      try {
+        const formData = new FormData();
+        formData.append("profilePic", selectedFile);
+
+        const response = await axios.post(
+          "http://localhost:3000/api/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        setUserDetails((prevDetails) => ({
+          ...prevDetails,
+          file: selectedFile,
+          previewUrl: URL.createObjectURL(selectedFile),
+          filePath: response.data.filePath, // Store the server file path
+        }));
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (userDetails.filePath) {
         try {
           await axios.delete("http://localhost:3000/api/delete-file", {
-            data: { filePath: file.path },
+            data: { filePath: userDetails.filePath },
           });
         } catch (error) {
           console.error("Error deleting file:", error);
         }
       }
     };
+
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
+      handleBeforeUnload(); // Call it on component unmount as well
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [file]);
+  }, [userDetails.filePath]);
 
   const handleSubmit = async (e) => {
-    console.log("Inside post request front-end, 1");
     e.preventDefault();
 
     const formData = new FormData();
-    // Log to verify data being appended
-    console.log("Appending form data:", {
-      username: username || "N/A",
-      password: password || "N/A",
-      name: name || "N/A",
-      address: address || "N/A",
-      phoneNumber: phoneNumber || "N/A",
-      file: file ? file.name : "No file",
-    });
-
-    formData.append("username", username);
-    formData.append("password", password);
-    formData.append("name", name);
-    formData.append("locality", locality);
-    formData.append("address", address);
-    formData.append("phoneNumber", phoneNumber);
-    if (file) {
-      console.log("Appending file to formData:", file); // Add this
-      formData.append("profilePic", file);
+    formData.append("username", userDetails.username);
+    formData.append("password", userDetails.password);
+    formData.append("name", userDetails.name);
+    formData.append("locality", userDetails.locality);
+    formData.append("address", userDetails.address);
+    formData.append("phoneNumber", userDetails.phoneNumber);
+    if (userDetails.file) {
+      formData.append("profilePic", userDetails.file);
     }
 
-    console.log(formData);
     try {
-      console.log("FormData:", formData.get("profilePic")); // Add this for debugging
-
       const response = await axios.post(
         "http://localhost:3000/api/signup",
         formData,
@@ -104,19 +95,15 @@ export default function Signup() {
         }
       );
 
-      console.log(response.data); // Log the response data (including req.file)
-
       if (response.status === 200) {
-        console.log(response.data);
         const { username, name, address, phoneNumber, file } = response.data;
-        // Update context with response data
         setUserDetails({
           username,
           name,
           address,
           phoneNumber,
           profilePic: file,
-          locality,
+          locality: userDetails.locality,
         });
         alert("You have successfully signed up");
         navigate("/");
@@ -134,27 +121,25 @@ export default function Signup() {
   return (
     <form action="" encType="multipart/form-data" onSubmit={handleSubmit}>
       <div className="flex items-center justify-center gap-16 overflow-y-auto h-screen mt-8 mb-20">
-        <div className="flex flex-col  mb-4 items-center justify-center">
-          {/* Container for Image Preview */}
+        <div className="flex flex-col mb-4 items-center justify-center">
           <div className="relative w-60 h-60 flex cursor-pointer items-center justify-center rounded-full">
-            {/* Hidden File Input */}
             <input
               type="file"
               name="profilePic"
               ref={fileInputRef}
-              className="absolute inset-0 opacity-0 cursor-pointer" // Hidden but clickable
+              className="absolute inset-0 opacity-0 cursor-pointer"
               accept=".jpg, .png"
               onChange={handleFileChange}
             />
             <div
               className="w-full h-full flex items-center justify-center overflow-hidden"
-              onClick={handleFileInputClick}
+              onClick={() => fileInputRef.current.click()}
             >
-              {previewUrl ? (
+              {userDetails.previewUrl ? (
                 <img
-                  src={previewUrl}
+                  src={userDetails.previewUrl}
                   alt="Preview"
-                  className="w-full h-full object-cover rounded-full" // Ensure 1:1 aspect ratio
+                  className="w-full h-full object-cover rounded-full"
                 />
               ) : (
                 <PhotoCameraIcon
@@ -183,8 +168,13 @@ export default function Signup() {
                 id="outlined-name"
                 label="Full Name"
                 variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={userDetails.name}
+                onChange={(e) =>
+                  setUserDetails((prevDetails) => ({
+                    ...prevDetails,
+                    name: e.target.value,
+                  }))
+                }
                 required
                 fullWidth
               />
@@ -194,8 +184,13 @@ export default function Signup() {
                 id="outlined-username"
                 label="Email-Id"
                 variant="outlined"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={userDetails.username}
+                onChange={(e) =>
+                  setUserDetails((prevDetails) => ({
+                    ...prevDetails,
+                    username: e.target.value,
+                  }))
+                }
                 required
                 fullWidth
               />
@@ -203,10 +198,15 @@ export default function Signup() {
             <div className="m-4 w-80">
               <TextField
                 id="outlined-locality"
-                label="Locality (kandivali-west,malad-west)"
+                label="Locality"
                 variant="outlined"
-                value={locality}
-                onChange={(e) => setLocality(e.target.value)}
+                value={userDetails.locality}
+                onChange={(e) =>
+                  setUserDetails((prevDetails) => ({
+                    ...prevDetails,
+                    locality: e.target.value,
+                  }))
+                }
                 required
                 fullWidth
               />
@@ -216,8 +216,13 @@ export default function Signup() {
                 id="outlined-address"
                 label="Address"
                 variant="outlined"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                value={userDetails.address}
+                onChange={(e) =>
+                  setUserDetails((prevDetails) => ({
+                    ...prevDetails,
+                    address: e.target.value,
+                  }))
+                }
                 required
                 fullWidth
               />
@@ -228,8 +233,13 @@ export default function Signup() {
                 label="Password"
                 variant="outlined"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={userDetails.password}
+                onChange={(e) =>
+                  setUserDetails((prevDetails) => ({
+                    ...prevDetails,
+                    password: e.target.value,
+                  }))
+                }
                 required
                 fullWidth
               />
@@ -239,8 +249,13 @@ export default function Signup() {
                 id="outlined-number"
                 label="Phone Number"
                 variant="outlined"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={userDetails.phoneNumber}
+                onChange={(e) =>
+                  setUserDetails((prevDetails) => ({
+                    ...prevDetails,
+                    phoneNumber: e.target.value,
+                  }))
+                }
                 required
                 fullWidth
               />
