@@ -10,6 +10,13 @@ import Typography from "@mui/material/Typography";
 import parse from "html-react-parser"; // Import parse this is used to pars html elements in React
 
 export default function Hotelcard({ name, rating, htmlAttributions }) {
+  const updateHtmlAttributions = (attribution) => {
+    return attribution.replace(
+      /<a /g,
+      '<a target="_blank" rel="noopener noreferrer" '
+    );
+  };
+
   return (
     <Card sx={{ maxWidth: 345, border: "1px solid black", marginTop: "1rem" }}>
       <CardContent>
@@ -24,7 +31,9 @@ export default function Hotelcard({ name, rating, htmlAttributions }) {
             htmlAttributions.map((attr, i) => (
               <div key={i}>
                 <span>Click Here For Details:</span>&nbsp;
-                <span className="font-bold	">{parse(attr)}</span>
+                <span className="font-bold">
+                  {parse(updateHtmlAttributions(attr))}
+                </span>
               </div>
             ))
           ) : (

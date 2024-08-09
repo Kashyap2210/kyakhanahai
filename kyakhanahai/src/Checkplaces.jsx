@@ -29,7 +29,6 @@ export default function Checkplaces() {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null); //Stores value of selected restaurant
   const [city, setCity] = useState(null); //Stores value of city
 
-  //Google Places API Functions
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: apiUrl,
@@ -43,16 +42,13 @@ export default function Checkplaces() {
       }
     : { lat: 0, lng: 0, zoom: 13.5 }; // Default center if userLocation is not available
 
-  const onLoad = React.useCallback(
-    function callback(map) {
-      const bounds = new window.google.maps.LatLngBounds(center);
-      map.fitBounds(bounds);
-      setMap(map);
-    },
-    [center]
-  );
+  const onLoad = (map) => {
+    const bounds = new window.google.maps.LatLngBounds(center);
+    map.fitBounds(bounds);
+    setMap(map);
+  };
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = React.useCallback((map) => {
     setMap(null);
   }, []);
 
@@ -149,7 +145,9 @@ export default function Checkplaces() {
       // console.log(locality);
       console.log(city);
       console.log(userDetails.locality, 1);
-      const searchUrl = `${ZOMATO_URL}${city}/${userDetails.profile.locality}-restaurants/dish-${dish.name}`;
+      const searchUrl = `${ZOMATO_URL}${city}/${
+        userDetails.profile.locality
+      }-restaurants/dish-${dish.name.toLowerCase()}`;
       console.log(searchUrl);
       window.open(searchUrl, "_blank");
     }
