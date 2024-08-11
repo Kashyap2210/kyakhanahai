@@ -23,6 +23,9 @@ export default function Signup() {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       try {
+        // Generate a preview URL
+        const previewUrl = URL.createObjectURL(selectedFile);
+
         const formData = new FormData();
         formData.append("profilePic", selectedFile);
 
@@ -36,11 +39,12 @@ export default function Signup() {
           }
         );
 
+        // Update the state with the preview URL and file path
         setUserDetails((prevDetails) => ({
           ...prevDetails,
           file: selectedFile,
-          previewUrl: URL.createObjectURL(selectedFile),
-          filePath: response.data.filePath, // Store the server file path
+          previewUrl: previewUrl,
+          filePath: response.data.filePath,
         }));
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -90,20 +94,21 @@ export default function Signup() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            withCredentials: true,
           },
-          withCredentials: true,
         }
       );
 
       if (response.status === 200) {
-        const { username, name, address, phoneNumber, file } = response.data;
+        const { username, name, address, phoneNumber, profilePic, locality } =
+          response.data;
         setUserDetails({
           username,
           name,
           address,
           phoneNumber,
-          profilePic: file,
-          locality: userDetails.locality,
+          profilePic,
+          locality,
         });
         alert("You have successfully signed up");
         navigate("/");

@@ -150,12 +150,19 @@ app.get("/api/checkAuth", (req, res) => {
   }
 });
 
-// This is an endpoint for signingup a user
+app.post("/api/upload", upload.single("profilePic"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+
+  res.status(200).json({ filePath: `/uploads/${req.file.filename}` });
+});
 // Signup route
 app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
   const { username, password, name, address, phoneNumber, locality } = req.body;
   const profilePic = req.file ? req.file.path : null;
-
+  console.log(req.file);
+  console.log(profilePic);
   try {
     const existingUser = await websiteUser.findOne({ username });
     if (existingUser) {
@@ -182,7 +189,7 @@ app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
         console.error("Error during login:", err);
         return res.status(500).json({ message: "Login error" });
       }
-      const { email, username, name, profile, profilePic, locality } = newUser;
+      const { email, username, name, profile, profilePic } = newUser;
       res.status(200).json({
         email,
         username,
