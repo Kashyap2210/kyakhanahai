@@ -15,6 +15,9 @@ const session = require("express-session");
 
 const axios = require("axios"); //Used to send async req to REST Endpoints
 
+const { storage, cloudinary } = require("./cloudConfig");
+const upload = multer({ storage });
+
 const apiKey = process.env.GOOGLE_API_KEY;
 
 //Middleware For CORS that accepts below mentione requests
@@ -118,16 +121,15 @@ passport.use(new LocalStrategy(websiteUser.authenticate()));
 passport.serializeUser(websiteUser.serializeUser());
 passport.deserializeUser(websiteUser.deserializeUser());
 
-// Multer configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    return cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}_${file.originalname}`); // Append the file extension
-  },
-});
-const upload = multer({ storage });
+// // Multer configuration
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     return cb(null, "uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, `${Date.now()}_${file.originalname}`); // Append the file extension
+//   },
+// });
 
 // Middleware to check if the user is authenticated or not. This middleware is used to check actual users information for authentication.
 const isLoggedIn = (req, res, next) => {

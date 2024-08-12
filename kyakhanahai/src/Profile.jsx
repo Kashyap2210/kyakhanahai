@@ -45,9 +45,7 @@ export default function Profile() {
     return <p className="text-white">Please log in again.</p>; // Redirect or show message
   }
 
-  const profilePicUrl = userDetails.profilePic
-    ? `http://localhost:3000/${userDetails.profilePic}`
-    : "";
+  const profilePicUrl = userDetails.profilePic;
 
   const deleteUser = async () => {
     try {

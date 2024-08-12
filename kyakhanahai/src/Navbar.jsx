@@ -14,9 +14,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const profilePicUrl = userDetails.profilePic
-    ? `http://localhost:3000/${userDetails.profilePic}`
-    : "";
+  const profilePicUrl = userDetails.profilePic;
 
   useEffect(() => {
     // Check authentication status on component mount
