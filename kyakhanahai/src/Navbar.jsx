@@ -12,9 +12,9 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); //isAuthenticated state is used to display seperate navbar elements depending on whether the user is loggedin or not
   const { userDetails, setUserDetails } = useContext(UserProfileContext);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
-  const profilePicUrl = userDetails.profilePic;
+  const profilePicUrl = userDetails?.profilePic;
 
   useEffect(() => {
     // Check authentication status on component mount
@@ -33,7 +33,7 @@ export default function Navbar() {
     };
 
     checkAuth(); //Function is called to check the authentication
-    const intervalId = setInterval(checkAuth, 1000); //Sets periodic timer that calls checkAuth every second.
+    const intervalId = setInterval(checkAuth, 30000); //Sets periodic timer that calls checkAuth every second.
     return () => clearInterval(intervalId); //Cleanup function to clear the interval
   }, []);
 
@@ -57,7 +57,7 @@ export default function Navbar() {
 
   return (
     <div className="navbar glass sticky top-0  pt-4">
-      <div className={" bg-fuchsia-700 mx-auto max-w-6xl rounded-3xl"}>
+      <div className={"bg-fuchsia-700 mx-auto max-w-6xl rounded-3xl"}>
         {" "}
         {/*I want to set the width of the nav bar it should not change according to the page */}
         <div className="h-12 flex justify-between items-center  text-xl font-bold">
@@ -74,9 +74,9 @@ export default function Navbar() {
             {isAuthenticated ? (
               // COnditional rendering based on the state variable value
               <div>
-                <Link onClick={handleLogout}>
+                <div onClick={handleLogout}>
                   <Navbarelements title={"Logout"} />
-                </Link>
+                </div>
               </div>
             ) : (
               <>
@@ -92,7 +92,7 @@ export default function Navbar() {
               // COnditional rendering based on the state variable value
               <div>
                 <Link to="/profile">
-                  <div className="  ml-20 bg-fuchsia-700	text-white">
+                  <div className="ml-20 bg-fuchsia-700 text-white">
                     {profilePicUrl ? (
                       <img
                         src={profilePicUrl}
@@ -100,7 +100,7 @@ export default function Navbar() {
                         className="h-8 rounded-full"
                       />
                     ) : (
-                      <p className="border w-8 rounded-full border-2">U</p>
+                      <p className=" w-8 rounded-full border-2">U</p>
                     )}
                   </div>
                 </Link>
