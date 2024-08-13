@@ -12,6 +12,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const axios = require("axios"); //Used to send async req to REST Endpoints
 
@@ -45,8 +46,23 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
+const dbUrl = process.env.ATLAS_DB_URL;
+
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: "keyboardcat",
+    touchAfter: 24 * 3600, // time period in seconds
+  },
+});
+
+store.on("error", () => {
+  console.log("Error in Mongo-session store", error);
+});
+
 //Session Options & Middleware
 const sessionOptions = {
+  store,
   secret: "keyboardcat",
   resave: false,
   saveUninitialized: true,
@@ -63,7 +79,7 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Method to connect Backedn Server to MongoDB
+//Method to connect Backend Server to MongoDB
 main()
   .then(() => {
     console.log("Connection Successful");
@@ -71,7 +87,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/food_store");
+  await mongoose.connect(dbUrl);
 }
 
 /* MODEL FOR THE DISH START */

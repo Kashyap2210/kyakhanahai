@@ -74,7 +74,7 @@ export default function Navbar() {
             {isAuthenticated ? (
               // COnditional rendering based on the state variable value
               <div>
-                <div onClick={handleLogout}>
+                <div onClick={handleLogout} className="cursor-pointer">
                   <Navbarelements title={"Logout"} />
                 </div>
               </div>
