@@ -50,12 +50,9 @@ export default function Getdish() {
     try {
       navigate("/getdish");
       console.log("inside try block");
-      const response = await axios.get(
-        "https://kyakhanahai.onrender.com/api/getdish",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get("${VITE_APP_API_URL}/api/getdish", {
+        withCredentials: true,
+      });
       console.log("Request sent to get dish");
 
       if (response.status === 200) {

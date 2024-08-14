@@ -16,12 +16,9 @@ export default function Profile() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const userResponse = await axios.get(
-          "https://kyakhanahai.onrender.com/api/user",
-          {
-            withCredentials: true,
-          }
-        );
+        const userResponse = await axios.get("${VITE_APP_API_URL}/api/user", {
+          withCredentials: true,
+        });
         console.log(userResponse.data);
         // Update context with user details
         setUserDetails(userResponse.data);
@@ -53,7 +50,7 @@ export default function Profile() {
   const deleteUser = async () => {
     try {
       const deleteAccount = await axios.delete(
-        "https://kyakhanahai.onrender.com/api/deleteaccount",
+        "${VITE_APP_API_URL}/api/deleteaccount",
         {
           data: { userId: userDetails._id }, // Sending additional data
           withCredentials: true,

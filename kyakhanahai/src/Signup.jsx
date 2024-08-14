@@ -30,7 +30,7 @@ export default function Signup() {
         formData.append("profilePic", selectedFile);
 
         const response = await axios.post(
-          "https://kyakhanahai.onrender.com/api/upload",
+          "${VITE_APP_API_URL}/api/upload",
           formData,
           {
             headers: {
@@ -56,12 +56,9 @@ export default function Signup() {
     const handleBeforeUnload = async () => {
       if (userDetails.filePath) {
         try {
-          await axios.delete(
-            "https://kyakhanahai.onrender.com/api/delete-file",
-            {
-              data: { filePath: userDetails.filePath },
-            }
-          );
+          await axios.delete("${VITE_APP_API_URL}/api/delete-file", {
+            data: { filePath: userDetails.filePath },
+          });
         } catch (error) {
           console.error("Error deleting file:", error);
         }
@@ -92,7 +89,7 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        "https://kyakhanahai.onrender.com/api/signup",
+        "${VITE_APP_API_URL}/api/signup",
         formData,
         {
           headers: {
