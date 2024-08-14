@@ -8,6 +8,8 @@ import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import UserProfileContext from "../Context/UserContext";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Signup() {
   const { userDetails, setUserDetails } = useContext(UserProfileContext);
   const fileInputRef = useRef(null);
