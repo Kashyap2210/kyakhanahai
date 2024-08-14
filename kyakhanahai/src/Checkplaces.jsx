@@ -16,7 +16,7 @@ import Hotelcard from "./Hotelcard"; //This is a card to show all the hotels in 
 import Button from "@mui/material/Button";
 import UserProfileContext from "../Context/UserContext";
 
-const ZOMATO_URL = "https://www.zomato.com/"; //This is the base Zomato URL
+const ZOMATO_URL = `https://www.zomato.com/`; //This is the base Zomato URL
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API; //This is the API key for places API and Google Maps API
 
 export default function Checkplaces() {

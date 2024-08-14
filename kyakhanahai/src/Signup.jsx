@@ -30,7 +30,7 @@ export default function Signup() {
         formData.append("profilePic", selectedFile);
 
         const response = await axios.post(
-          "${VITE_APP_API_URL}/api/upload",
+          `${VITE_APP_API_URL}/api/upload`,
           formData,
           {
             headers: {
