@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; //useNavigate is used to change to components on the DOM to some preset components
 import Button from "@mui/material/Button";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Secondintrocomp() {
   const navigate = useNavigate();
   const showDish = async (e) => {

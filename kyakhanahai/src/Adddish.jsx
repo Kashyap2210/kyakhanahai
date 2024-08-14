@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import { Autocomplete, TextField } from "@mui/material";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Login() {
   // State variables for dish Info
   const [id, setId] = useState("");

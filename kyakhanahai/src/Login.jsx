@@ -7,6 +7,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import "./index.css";
 import UserProfileContext from "../Context/UserContext";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Login() {
   const [username, setUsername] = useState(""); // Username is stored as state variable
   const [password, setPassword] = useState("");

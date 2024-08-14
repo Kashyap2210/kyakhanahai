@@ -18,6 +18,7 @@ import UserProfileContext from "../Context/UserContext";
 
 const ZOMATO_URL = `https://www.zomato.com/`; //This is the base Zomato URL
 const apiUrl = import.meta.env.VITE_APP_GOOGLE_API; //This is the API key for places API and Google Maps API
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
 
 export default function Checkplaces() {
   const location = useLocation();

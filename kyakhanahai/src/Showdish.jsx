@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Showdish() {
   const navigate = useNavigate();
   const location = useLocation(); //Allows us to access the state passed to IDBTransaction, i.e. the dishes

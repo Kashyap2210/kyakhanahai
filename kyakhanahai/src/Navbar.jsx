@@ -8,6 +8,8 @@ import UserProfileContext from "../Context/UserContext";
 
 // import RestaurantIcon from "@mui/icons-material/Restaurant";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); //isAuthenticated state is used to display seperate navbar elements depending on whether the user is loggedin or not
   const { userDetails, setUserDetails } = useContext(UserProfileContext);

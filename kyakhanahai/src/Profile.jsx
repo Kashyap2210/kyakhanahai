@@ -7,6 +7,8 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom"; //Link is used to give useNavigate a link to certain element
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Profile() {
   const { userDetails, setUserDetails } = useContext(UserProfileContext);
   console.log(userDetails);

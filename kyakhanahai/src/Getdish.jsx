@@ -7,6 +7,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
+
 export default function Getdish() {
   const navigate = useNavigate();
   const location = useLocation();
