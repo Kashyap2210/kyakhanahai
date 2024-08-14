@@ -18,7 +18,7 @@ const axios = require("axios"); //Used to send async req to REST Endpoints
 
 const { storage, cloudinary } = require("./cloudConfig");
 const upload = multer({ storage });
-
+  
 const apiKey = process.env.GOOGLE_API_KEY;
 
 //Middleware For CORS that accepts below mentione requests
@@ -39,7 +39,7 @@ app.options(
 );
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -172,9 +172,9 @@ app.post("/api/upload", upload.single("profilePic"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
-
-  res.status(200).json({ filePath: `/uploads/${req.file.filename}` });
+  res.status(200).json({ filePath: `/upload/${req.file.filename}` });
 });
+
 // Signup route
 app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
   const { username, password, name, address, phoneNumber, locality } = req.body;
