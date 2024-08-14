@@ -24,7 +24,7 @@ export default function Login() {
     try {
       // Check if user is authenticated
       const authResponse = await axios.get(
-        "http://localhost:3000/api/checkAuth",
+        "https://kyakhanahai.onrender.com/api/checkAuth",
         {
           withCredentials: true,
         }
@@ -38,7 +38,7 @@ export default function Login() {
 
       console.log("inside try block");
       const response = await axios.post(
-        "http://localhost:3000/api/adddish",
+        "https://kyakhanahai.onrender.com/api/adddish",
         {
           //name, category, type are sent to backend
           name,

@@ -21,7 +21,7 @@ export default function Navbar() {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/checkAuth",
+          "https://kyakhanahai.onrender.com/api/checkAuth",
           {
             withCredentials: true, //This is used to send data with req, like session cookies
           }
@@ -42,7 +42,7 @@ export default function Navbar() {
     console.log("Logout Request Sent From Frontend");
     try {
       await axios.post(
-        "http://localhost:3000/api/logout",
+        "https://kyakhanahai.onrender.com/api/logout",
         {},
         {
           withCredentials: true,

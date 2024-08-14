@@ -22,7 +22,7 @@ export default function Showdish() {
     try {
       console.log("inside try block");
       const response = await axios.post(
-        "http://localhost:3000/api/deletedish",
+        "https://kyakhanahai.onrender.com/api/deletedish",
         {
           id,
         },
@@ -45,9 +45,12 @@ export default function Showdish() {
     //Function to show remaining dishes after a certain dish is deleted
     try {
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/api/showdish", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://kyakhanahai.onrender.com/api/showdish",
+        {
+          withCredentials: true,
+        }
+      );
       console.log("Request sent");
 
       if (response.status === 200) {

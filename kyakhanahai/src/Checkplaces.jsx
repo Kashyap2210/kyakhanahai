@@ -71,22 +71,6 @@ export default function Checkplaces() {
         const addressComponents =
           response.data.results[0]?.address_components || [];
 
-        // let localityComponent = addressComponents.find(
-        //   //THis is the component for locality, like kandivali-west, malad-west, etc
-        //   (component) =>
-        //     component.types.includes("sublocality_level_1") ||
-        //     component.types.includes("locality")
-        // );
-
-        // // If localityComponent is not found, search for sublocality or neighborhood
-        // if (!localityComponent) {
-        //   localityComponent = addressComponents.find(
-        //     (component) =>
-        //       component.types.includes("sublocality") ||
-        //       component.types.includes("neighborhood")
-        //   );
-        // }
-
         let cityComponent = addressComponents.find(
           //THis locates the city of the location
           (component) =>
@@ -157,7 +141,7 @@ export default function Checkplaces() {
     //Function to fetch restaurants in the nearby the location of the user
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/getNearbyRestaurants",
+        "https://kyakhanahai.onrender.com/api/getNearbyRestaurants",
         {
           params: {
             lat: location.latitude,

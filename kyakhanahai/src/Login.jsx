@@ -23,7 +23,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/login",
+        "https://kyakhanahai.onrender.com/api/login",
         { username, password },
         {
           headers: {
@@ -35,9 +35,12 @@ export default function Login() {
 
       if (response.status === 200) {
         // Fetch user details
-        const userResponse = await axios.get("http://localhost:3000/api/user", {
-          withCredentials: true,
-        });
+        const userResponse = await axios.get(
+          "https://kyakhanahai.onrender.com/api/user",
+          {
+            withCredentials: true,
+          }
+        );
 
         // Update context and localStorage with user details
         setUserDetails(userResponse.data);

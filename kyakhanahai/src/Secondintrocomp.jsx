@@ -11,7 +11,7 @@ export default function Secondintrocomp() {
     e.preventDefault();
     try {
       const authResponse = await axios.get(
-        "http://localhost:3000/api/checkAuth",
+        "https://kyakhanahai.onrender.com/api/checkAuth",
         {
           withCredentials: true,
         }
@@ -23,10 +23,13 @@ export default function Secondintrocomp() {
         return;
       }
       console.log("inside try block");
-      const response = await axios.get("http://localhost:3000/api/showdish", {
-        //Response sent to the backend
-        withCredentials: true, //This sends session details
-      });
+      const response = await axios.get(
+        "https://kyakhanahai.onrender.com/api/showdish",
+        {
+          //Response sent to the backend
+          withCredentials: true, //This sends session details
+        }
+      );
       console.log("Request sent");
 
       // if-else loop to show the data or error
@@ -48,7 +51,7 @@ export default function Secondintrocomp() {
     try {
       // Checking whether user is authenticated
       const authResponse = await axios.get(
-        "http://localhost:3000/api/checkAuth",
+        "https://kyakhanahai.onrender.com/api/checkAuth",
         {
           withCredentials: true,
         }
@@ -62,9 +65,12 @@ export default function Secondintrocomp() {
       navigate("/getdish");
       console.log("inside try block");
       // req for generating a random dish
-      const response = await axios.get("http://localhost:3000/api/getdish", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://kyakhanahai.onrender.com/api/getdish",
+        {
+          withCredentials: true,
+        }
+      );
       console.log("Request sent");
 
       if (response.status === 200) {

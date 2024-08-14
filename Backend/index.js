@@ -47,7 +47,6 @@ app.use((err, req, res, next) => {
 });
 
 const dbUrl = process.env.ATLAS_DB_URL;
-console.log("MongoDB URL:", dbUrl); // Add this line to verify if dbUrl is loaded correctly
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
