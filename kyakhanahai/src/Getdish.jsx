@@ -50,7 +50,7 @@ export default function Getdish() {
     try {
       navigate("/getdish");
       console.log("inside try block");
-      const response = await axios.get("${VITE_APP_API_URL}/api/getdish", {
+      const response = await axios.get(`${VITE_APP_API_URL}/api/getdish`, {
         withCredentials: true,
       });
       console.log("Request sent to get dish");

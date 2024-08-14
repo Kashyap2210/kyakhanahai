@@ -23,7 +23,7 @@ export default function Secondintrocomp() {
         return;
       }
       console.log("inside try block");
-      const response = await axios.get("${VITE_APP_API_URL}/api/showdish", {
+      const response = await axios.get(`${VITE_APP_API_URL}/api/showdish`, {
         //Response sent to the backend
         withCredentials: true, //This sends session details
       });
@@ -48,7 +48,7 @@ export default function Secondintrocomp() {
     try {
       // Checking whether user is authenticated
       const authResponse = await axios.get(
-        "${VITE_APP_API_URL}/api/checkAuth",
+        `${VITE_APP_API_URL}/api/checkAuth`,
         {
           withCredentials: true,
         }
@@ -62,7 +62,7 @@ export default function Secondintrocomp() {
       navigate("/getdish");
       console.log("inside try block");
       // req for generating a random dish
-      const response = await axios.get("${VITE_APP_API_URL}/api/getdish", {
+      const response = await axios.get(`${VITE_APP_API_URL}/api/getdish`, {
         withCredentials: true,
       });
       console.log("Request sent");

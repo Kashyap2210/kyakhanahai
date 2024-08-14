@@ -23,7 +23,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "${VITE_APP_API_URL}/api/login",
+        `${VITE_APP_API_URL}/api/login`,
         { username, password },
         {
           headers: {
@@ -35,7 +35,7 @@ export default function Login() {
 
       if (response.status === 200) {
         // Fetch user details
-        const userResponse = await axios.get("${VITE_APP_API_URL}/api/user", {
+        const userResponse = await axios.get(`${VITE_APP_API_URL}/api/user`, {
           withCredentials: true,
         });
 

@@ -56,7 +56,7 @@ export default function Signup() {
     const handleBeforeUnload = async () => {
       if (userDetails.filePath) {
         try {
-          await axios.delete("${VITE_APP_API_URL}/api/delete-file", {
+          await axios.delete(`${VITE_APP_API_URL}/api/delete-file`, {
             data: { filePath: userDetails.filePath },
           });
         } catch (error) {
@@ -89,7 +89,7 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        "${VITE_APP_API_URL}/api/signup",
+        `${VITE_APP_API_URL}/api/signup`,
         formData,
         {
           headers: {

@@ -22,7 +22,7 @@ export default function Showdish() {
     try {
       console.log("inside try block");
       const response = await axios.post(
-        "${VITE_APP_API_URL}/api/deletedish",
+        `${VITE_APP_API_URL}/api/deletedish`,
         {
           id,
         },
@@ -45,7 +45,7 @@ export default function Showdish() {
     //Function to show remaining dishes after a certain dish is deleted
     try {
       console.log("inside try block");
-      const response = await axios.get("${VITE_APP_API_URL}/api/showdish", {
+      const response = await axios.get(`${VITE_APP_API_URL}/api/showdish`, {
         withCredentials: true,
       });
       console.log("Request sent");
