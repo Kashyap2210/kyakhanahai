@@ -24,10 +24,7 @@ const apiKey = process.env.GOOGLE_API_KEY;
 //Middleware For CORS that accepts below mentione requests
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://kyakhanahai-frontend.onrender.com",
-    ],
+    origin: ["https://kyakhanahai-frontend.onrender.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
