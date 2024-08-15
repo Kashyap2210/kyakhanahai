@@ -21,6 +21,19 @@ const upload = multer({ storage });
 
 const apiKey = process.env.GOOGLE_API_KEY;
 
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "http://localhost:5173",
+    "https://kyakhanahai-frontend.onrender.com"
+  ); // Replace "*" with allowedOrigins for better security
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 //Middleware For CORS that accepts below mentione requests
 const allowedOrigins = [
   "http://localhost:5173",
