@@ -12,7 +12,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo").default;
+const MongoStore = require("connect-mongo");
 
 const axios = require("axios"); //Used to send async req to REST Endpoints
 
@@ -44,7 +44,7 @@ app.use(
 app.options(
   "*",
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -66,7 +66,6 @@ const store = MongoStore.create({
     secret: "keyboardcat",
     touchAfter: 24 * 3600, // time period in seconds
   },
-  ...options,
 });
 
 store.on("error", () => {
