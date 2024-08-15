@@ -12,11 +12,11 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
 
 const axios = require("axios"); //Used to send async req to REST Endpoints
 
-const { storage, cloudinary } = require("./cloudConfig");
+const { storage } = require("./cloudConfig");
 const upload = multer({ storage });
 
 const apiKey = process.env.GOOGLE_API_KEY;
@@ -66,6 +66,7 @@ const store = MongoStore.create({
     secret: "keyboardcat",
     touchAfter: 24 * 3600, // time period in seconds
   },
+  ...options,
 });
 
 store.on("error", () => {
