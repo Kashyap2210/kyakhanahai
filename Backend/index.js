@@ -74,19 +74,10 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-mongoose
-  .connect(process.env.ATLAS_DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .catch((error) => console.log("App.js mongoose.connect error", error));
-
-const db = mongoose.connection;
-db.on("error", console.error);
-db.once("open", function () {
-  console.log("App is connected to DB", db.name);
+mongoose.connect(process.env.ATLAS_DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
-mongoose.Promise = global.Promise;
 
 app.use(
   session({
@@ -94,13 +85,12 @@ app.use(
     saveUninitialized: false,
     resave: false,
     store: MongoStore.create({
-      client: mongoose.connection.getClient(), // Use existing mongoose connection
+      client: mongoose.connection.getClient(),
       ttl: 1 * 6 * 60 * 60, // TTL for sessions (1 hour)
       autoRemove: "native", // Auto-remove expired sessions
     }),
   })
 );
-
 //Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
