@@ -21,6 +21,17 @@ const upload = multer({ storage });
 
 const apiKey = process.env.GOOGLE_API_KEY;
 
+//Method to connect Backend Server to MongoDB
+main()
+  .then(() => {
+    console.log("Connection Successful");
+  })
+  .catch((err) => console.log(err));
+
+async function main() {
+  await mongoose.connect(dbUrl);
+}
+
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
@@ -96,17 +107,6 @@ app.use(session(sessionOptions));
 //Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
-
-//Method to connect Backend Server to MongoDB
-main()
-  .then(() => {
-    console.log("Connection Successful");
-  })
-  .catch((err) => console.log(err));
-
-async function main() {
-  await mongoose.connect(dbUrl);
-}
 
 /* MODEL FOR THE DISH START */
 const userFoodSchema = new mongoose.Schema({
