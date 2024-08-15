@@ -54,14 +54,6 @@ app.use(
   })
 );
 
-app.options(
-  "*",
-  cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -96,7 +88,7 @@ const sessionOptions = {
     expires: Date.now() + 1000 * 60 * 60 * 24 * 3,
     maxAge: 1000 * 60 * 60 * 24 * 3,
     httpOnly: true,
-    secure: true, // Set to true in production with HTTPS
+    secure: process.env.NODE_ENV === "production", // Set to true in production with HTTPS
   },
 };
 app.use(session(sessionOptions));
