@@ -22,28 +22,28 @@ const upload = multer({ storage });
 const apiKey = process.env.GOOGLE_API_KEY;
 
 //Method to connect Backend Server to MongoDB
-main()
-  .then(() => {
-    console.log("Connection Successful");
-  })
-  .catch((err) => console.log(err));
+// main()
+//   .then(() => {
+//     console.log("Connection Successful");
+//   })
+//   .catch((err) => console.log(err));
 
-async function main() {
-  await mongoose.connect(dbUrl);
-}
+// async function main() {
+//   await mongoose.connect(dbUrl);
+// }
 
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "http://localhost:5173",
-    "https://kyakhanahai-frontend.onrender.com"
-  ); // Replace "*" with allowedOrigins for better security
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header(
+//     "Access-Control-Allow-Origin",
+//     "http://localhost:5173",
+//     "https://kyakhanahai-frontend.onrender.com"
+//   ); // Replace "*" with allowedOrigins for better security
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
 //Middleware For CORS that accepts below mentione requests
 const allowedOrigins = [
@@ -74,35 +74,32 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-const dbUrl = process.env.ATLAS_DB_URL;
+mongoose
+  .connect(process.env.ATLAS_DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .catch((error) => console.log("App.js mongoose.connect error", error));
 
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
-    secret: "keyboardcat",
-    touchAfter: 24 * 3600, // time period in seconds
-  },
+const db = mongoose.connection;
+db.on("error", console.error);
+db.once("open", function () {
+  console.log("App is connected to DB", db.name);
 });
+mongoose.Promise = global.Promise;
 
-store.on("error", () => {
-  console.log("Error in Mongo-session store", error);
-});
-
-//Session Options & Middleware
-const sessionOptions = {
-  store,
-  secret: "keyboardcat",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    secure: process.env.NODE_ENV === "production",
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 3,
-    maxAge: 1000 * 60 * 60 * 24 * 3,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Set to true in production with HTTPS
-  },
-};
-app.use(session(sessionOptions));
+app.use(
+  session({
+    secret: "Your secret here",
+    saveUninitialized: false,
+    resave: false,
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(), // Use existing mongoose connection
+      ttl: 1 * 6 * 60 * 60, // TTL for sessions (1 hour)
+      autoRemove: "native", // Auto-remove expired sessions
+    }),
+  })
+);
 
 //Passport Middlewares
 app.use(passport.initialize());
