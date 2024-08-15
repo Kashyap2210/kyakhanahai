@@ -22,13 +22,25 @@ const upload = multer({ storage });
 const apiKey = process.env.GOOGLE_API_KEY;
 
 //Middleware For CORS that accepts below mentione requests
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://kyakhanahai-frontend.onrender.com",
+];
+
 app.use(
   cors({
-    origin: ["https://kyakhanahai-frontend.onrender.com"],
+    origin: function (origin, callback) {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
 app.options(
   "*",
   cors({
@@ -67,10 +79,11 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: true,
   cookie: {
+    secure: process.env.NODE_ENV === "production", // Secure cookies in production
     expires: Date.now() + 1000 * 60 * 60 * 24 * 3,
     maxAge: 1000 * 60 * 60 * 24 * 3,
     httpOnly: true,
-    secure: false, // Set to true in production with HTTPS
+    secure: true, // Set to true in production with HTTPS
   },
 };
 app.use(session(sessionOptions));
@@ -134,8 +147,15 @@ passport.use(new LocalStrategy(websiteUser.authenticate()));
 
 // Serializing & Deserializing Middlewares
 // They help data to be stored and transferred
-passport.serializeUser(websiteUser.serializeUser());
-passport.deserializeUser(websiteUser.deserializeUser());
+passport.serializeUser((user, done) => {
+  done(null, user.id); // Save user ID in the session
+});
+
+passport.deserializeUser((id, done) => {
+  websiteUser.findById(id, (err, user) => {
+    done(err, user); // Attach user object to req.user
+  });
+});
 
 // // Multer configuration
 // const storage = multer.diskStorage({
