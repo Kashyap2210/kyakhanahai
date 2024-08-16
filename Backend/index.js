@@ -22,6 +22,8 @@ const upload = multer({ storage });
 const apiKey = process.env.GOOGLE_API_KEY;
 const dbUrl = process.env.ATLAS_DB_URL;
 
+console.log(dbUrl);
+
 //Method to connect Backend Server to MongoDB
 // main()
 //   .then(() => {
@@ -210,8 +212,12 @@ app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
       profilePic,
     });
 
-    await websiteUser.register(newUser, password);
-    console.log(newUser);
+    try {
+      await websiteUser.register(newUser, password);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      return res.status(500).json({ message: "Signup failed" });
+    }
     // Authenticate the user
     req.login(newUser, (err) => {
       if (err) {
