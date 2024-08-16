@@ -20,6 +20,7 @@ const { storage } = require("./cloudConfig");
 const upload = multer({ storage });
 
 const apiKey = process.env.GOOGLE_API_KEY;
+const dbUrl = process.env.ATLAS_DB_URL;
 
 //Method to connect Backend Server to MongoDB
 // main()
@@ -48,7 +49,7 @@ const apiKey = process.env.GOOGLE_API_KEY;
 //Middleware For CORS that accepts below mentione requests
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://kyakhanahai-frontend.onrender.com",
+  "https://kyakhanahai.onrender.com",
 ];
 
 app.use(
@@ -74,9 +75,11 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-mongoose.connect(process.env.ATLAS_DB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+const connection = mongoose.createConnection(dbUrl);
+
+const sessionStore = MongoStore.create({
+  client: connection.getClient(),
+  collection: "session",
 });
 
 app.use(
@@ -84,11 +87,7 @@ app.use(
     secret: "Your secret here",
     saveUninitialized: false,
     resave: false,
-    store: MongoStore.create({
-      client: mongoose.connection.getClient(),
-      ttl: 1 * 6 * 60 * 60, // TTL for sessions (1 hour)
-      autoRemove: "native", // Auto-remove expired sessions
-    }),
+    store: sessionStore,
   })
 );
 //Passport Middlewares
