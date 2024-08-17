@@ -77,10 +77,15 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-const connection = mongoose.createConnection(dbUrl);
+mongoose.connect(dbUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// const connection = mongoose.createConnection(dbUrl);
 
 const sessionStore = MongoStore.create({
-  client: connection.getClient(),
+  client: mongoose.connection.getClient(),
   collection: "session",
 });
 
@@ -92,6 +97,10 @@ app.use(
     store: sessionStore,
   })
 );
+
+sessionStore.on("error", function (error) {
+  console.log("Session store error:", error);
+});
 //Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());

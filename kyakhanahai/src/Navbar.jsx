@@ -23,12 +23,9 @@ export default function Navbar() {
     // Check authentication status on component mount
     const checkAuth = async () => {
       try {
-        const response = await axios.get(
-          `https://kyakhanahai-backend.onrender.com/api/checkAuth`,
-          {
-            withCredentials: true, //This is used to send data with req, like session cookies
-          }
-        );
+        const response = await axios.get(`${VITE_APP_API_URL}/api/checkAuth`, {
+          withCredentials: true, //This is used to send data with req, like session cookies
+        });
         setIsAuthenticated(response.data.authenticated); //sets the value of state with the data recieved from the backend
       } catch (error) {
         console.error("Error checking authentication status:", error);
@@ -44,9 +41,13 @@ export default function Navbar() {
     //Function to log out the user & also sets the state of isAuthenticated to false
     console.log("Logout Request Sent From Frontend");
     try {
-      await axios.post(`https://kyakhanahai-backend.onrender.com/api/logout`, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${VITE_APP_API_URL}/api/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {
