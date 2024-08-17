@@ -41,13 +41,9 @@ export default function Navbar() {
     //Function to log out the user & also sets the state of isAuthenticated to false
     console.log("Logout Request Sent From Frontend");
     try {
-      await axios.post(
-        `${VITE_APP_API_URL}/api/logout`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.post(`https://kyakhanahai-backend.onrender.com/api/logout`, {
+        withCredentials: true,
+      });
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {
