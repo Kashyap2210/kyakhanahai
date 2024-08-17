@@ -25,7 +25,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${VITE_APP_API_URL}/api/login`,
+        `https://kyakhanahai-backend.onrender.com/api/login`,
         { username, password },
         {
           headers: {
