@@ -91,7 +91,7 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        `${VITE_APP_API_URL}/api/signup`,
+        `https://kyakhanahai-backend.onrender.com/api/signup`,
         formData,
         {
           headers: {
