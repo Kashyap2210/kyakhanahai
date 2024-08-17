@@ -37,9 +37,12 @@ export default function Login() {
 
       if (response.status === 200) {
         // Fetch user details
-        const userResponse = await axios.get(`${VITE_APP_API_URL}/api/user`, {
-          withCredentials: true,
-        });
+        const userResponse = await axios.get(
+          `https://kyakhanahai-backend.onrender.com/api/user`,
+          {
+            withCredentials: true,
+          }
+        );
 
         // Update context and localStorage with user details
         setUserDetails(userResponse.data);
