@@ -69,6 +69,7 @@ app.use(
 );
 
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -263,6 +264,15 @@ app.delete("/delete-file", async (req, res) => {
 
 // This is an endpoint for logging in the user
 app.post("/api/login", (req, res, next) => {
+  const { username, password } = req.body;
+
+  // Check if username and password are defined
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
+  }
+
   console.log("Log In Request Recieved At Backend");
   passport.authenticate("local", (err, user, info) => {
     if (err) {
