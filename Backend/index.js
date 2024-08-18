@@ -262,8 +262,8 @@ app.delete("/delete-file", async (req, res) => {
   });
 });
 
-// This is an endpoint for logging in the user
 app.post("/api/login", async (req, res, next) => {
+  console.log("Log In Request Received At Backend");
   const { username, password } = req.body;
 
   // Check if username and password are defined
@@ -272,23 +272,32 @@ app.post("/api/login", async (req, res, next) => {
       .status(400)
       .json({ error: "Username and password are required" });
   }
-
-  console.log("Log In Request Recieved At Backend");
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", async (err, user, info) => {
     if (err) {
       return next(err);
     }
     if (!user) {
       return res.status(401).send({ message: "Invalid credentials" });
     }
-    req.logIn(user, (err) => {
+    req.logIn(user, async (err) => {
       if (err) {
         return next(err);
       }
-      // res.status(200).send({ message: "Login successful" });
+      try {
+        const currentUser = await websiteUser
+          .findById(user._id)
+          .select("-password"); // Fetch user by ID, not username
+        return res
+          .status(200)
+          .send({ message: "Login successful", currentUser });
+      } catch (err) {
+        return next(err);
+      }
     });
   })(req, res, next);
-  console.log("User Successfully Logged In");
+});
+
+app.get("/api/user", isLoggedIn, async (req, res) => {
   try {
     // Assuming user ID is stored in session or token
     const userId = req.user._id; // Example: req.user is set by authentication middleware
@@ -304,8 +313,6 @@ app.post("/api/login", async (req, res, next) => {
     res.status(500).send({ message: "An error occurred" });
   }
 });
-
-// app.get("/api/user", isLoggedIn, async (req, res) => {});
 
 // This is an endpoint to add dish to DB and store it with Specific user details.
 app.post("/api/adddish", isLoggedIn, async (req, res) => {

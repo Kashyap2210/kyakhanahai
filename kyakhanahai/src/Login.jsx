@@ -30,13 +30,13 @@ export default function Login() {
         {
           headers: {
             "Content-Type": "application/json",
-            withCredentials: true,
           },
+          withCredentials: true,
         }
       );
 
       if (response.status === 200) {
-        // // Fetch user details
+        // Fetch user details
         // const userResponse = await axios.get(
         //   `https://kyakhanahai-backend.onrender.com/api/user`,
         //   {
@@ -44,9 +44,11 @@ export default function Login() {
         //   }
         // );
 
+        const currentUser = response.data.currentUser;
+
         // Update context and localStorage with user details
-        setUserDetails(response.user);
-        localStorage.setItem("userDetails", JSON.stringify(response.user));
+        setUserDetails(currentUser);
+        localStorage.setItem("userDetails", JSON.stringify(currentUser));
 
         navigate("/"); // Redirect to homepage after successful login
       } else {
