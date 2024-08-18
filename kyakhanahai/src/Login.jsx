@@ -47,11 +47,8 @@ export default function Login() {
         const currentUser = response.data.currentUser;
         console.log(currentUser);
         // Update context and localStorage with user details
-        setUserDetails(currentUser.currentUser);
-        localStorage.setItem(
-          "userDetails",
-          JSON.stringify(currentUser.currentUser)
-        );
+        setUserDetails(currentUser);
+        localStorage.setItem("userDetails", JSON.stringify(currentUser));
 
         navigate("/"); // Redirect to homepage after successful login
       } else {
