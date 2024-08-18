@@ -45,10 +45,13 @@ export default function Login() {
         // );
 
         const currentUser = response.data.currentUser;
-
+        console.log(currentUser);
         // Update context and localStorage with user details
         setUserDetails(currentUser);
-        localStorage.setItem("userDetails", JSON.stringify(currentUser));
+        localStorage.setItem(
+          "userDetails",
+          JSON.stringify(currentUser.currentUser)
+        );
 
         navigate("/"); // Redirect to homepage after successful login
       } else {
