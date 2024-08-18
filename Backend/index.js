@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const multer = require("multer");
-const path = require("path");
+
 const axios = require("axios"); //Used to send async req to REST Endpoints
 
 //Used for Authentication
@@ -15,8 +15,8 @@ const MongoStore = require("connect-mongo");
 
 const { storage } = require("./cloudConfig");
 const upload = multer({ storage });
-const websiteUser = require("./models/user.js");
-const Dish = require("./models/userFoodSchema.js");
+// const websiteUser = require("./models/user.js");
+// const Dish = require("./models/userFoodSchema.js");
 const connectDB = require("./db.js");
 
 const isLoggedIn = require("./middleware.js");
