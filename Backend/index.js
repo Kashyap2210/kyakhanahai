@@ -262,7 +262,8 @@ app.delete("/delete-file", async (req, res) => {
   });
 });
 
-app.post("/api/login", async (req, res, next) => {
+// This is an endpoint for logging in the user
+app.post("/api/login", (req, res, next) => {
   const { username, password } = req.body;
 
   // Check if username and password are defined
@@ -272,33 +273,23 @@ app.post("/api/login", async (req, res, next) => {
       .json({ error: "Username and password are required" });
   }
 
-  console.log("Log In Request Received At Backend");
-
-  passport.authenticate("local", async (err, user, info) => {
+  console.log("Log In Request Recieved At Backend");
+  passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
     }
     if (!user) {
       return res.status(401).send({ message: "Invalid credentials" });
     }
-
-    req.logIn(user, async (err) => {
+    req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
-
-      try {
-        const currentUser = await websiteUser
-          .findById(username)
-          .select("-password"); // Exclude password from response
-        return res
-          .status(200)
-          .send({ message: "Login successful", currentUser });
-      } catch (err) {
-        return next(err);
-      }
+      
+      res.status(200).send({ message: "Login successful" });
     });
   })(req, res, next);
+  console.log("User Successfully Logged In");
 });
 
 app.get("/api/user", isLoggedIn, async (req, res) => {
@@ -306,7 +297,7 @@ app.get("/api/user", isLoggedIn, async (req, res) => {
     // Assuming user ID is stored in session or token
     const userId = req.user._id; // Example: req.user is set by authentication middleware
     const user = await websiteUser.findById(userId).select("-password"); // Exclude password from response
-
+    
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
