@@ -10,7 +10,6 @@ const axios = require("axios"); //Used to send async req to REST Endpoints
 //Used for Authentication
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
@@ -97,74 +96,19 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// This middleware check whether the user is logged In or not so that Navbar can be rendered Accordingly.
-app.get("/api/checkAuth", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({ authenticated: true });
-  } else {
-    res.json({ authenticated: false });
-  }
-});
+const authenticationController = require("./Controller/authenticationController.js");
+const temporaryProfilePicUpload = require("./Controller/authenticationController.js");
+const signUp = require("./Controller/authenticationController.js");
+const logIn = require("./Controller/authenticationController.js");
+const getUserDetailsFromDb = require("./Controller/authenticationController.js");
 
-app.post("/api/upload", upload.single("profilePic"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
-  }
-  res.status(200).json({ filePath: `/upload/${req.file.filename}` });
-});
+// This middleware check whether the user is logged In or not so that Navbar can be rendered Accordingly.
+app.get("/api/checkAuth", authenticationController);
+
+app.post("/api/upload", upload.single("profilePic"), temporaryProfilePicUpload);
 
 // Signup route
-app.post("/api/signup", upload.single("profilePic"), async (req, res) => {
-  const { username, password, name, address, phoneNumber, locality } = req.body;
-  const profilePic = req.file ? req.file.path : null;
-  console.log(req.file);
-  console.log(profilePic);
-  try {
-    const existingUser = await websiteUser.findOne({ username });
-    if (existingUser) {
-      return res.status(409).json({ message: "User already registered" });
-    }
-
-    const newUser = new websiteUser({
-      email: username,
-      username,
-      name,
-      profile: {
-        address,
-        locality,
-        phone: phoneNumber,
-      },
-      profilePic,
-    });
-
-    try {
-      await websiteUser.register(newUser, password);
-    } catch (error) {
-      console.error("Error during registration:", error);
-      return res.status(500).json({ message: "Signup failed" });
-    }
-    // Authenticate the user
-    req.login(newUser, (err) => {
-      if (err) {
-        console.error("Error during login:", err);
-        return res.status(500).json({ message: "Login error" });
-      }
-      const { email, username, name, profile, profilePic } = newUser;
-      res.status(200).json({
-        email,
-        username,
-        name,
-        address: profile.address,
-        locality: profile.locality,
-        phoneNumber: profile.phone,
-        profilePic,
-      });
-    });
-  } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Signup error" });
-  }
-});
+app.post("/api/signup", upload.single("profilePic"), signUp);
 
 app.delete("/delete-file", async (req, res) => {
   const filePath = req.body.filePath;
@@ -178,51 +122,9 @@ app.delete("/delete-file", async (req, res) => {
 });
 
 // This is an endpoint for logging in the user
-app.post("/api/login", (req, res, next) => {
-  const { username, password } = req.body;
+app.post("/api/login", logIn);
 
-  // Check if username and password are defined
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: "Username and password are required" });
-  }
-
-  console.log("Log In Request Recieved At Backend");
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return res.status(401).send({ message: "Invalid credentials" });
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-
-      res.status(200).send({ message: "Login successful" });
-    });
-  })(req, res, next);
-  console.log("User Successfully Logged In");
-});
-
-app.get("/api/user", isLoggedIn, async (req, res) => {
-  try {
-    // Assuming user ID is stored in session or token
-    const userId = req.user._id; // Example: req.user is set by authentication middleware
-    const user = await websiteUser.findById(userId).select("-password"); // Exclude password from response
-
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-
-    res.status(200).send(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: "An error occurred" });
-  }
-});
+app.get("/api/user", isLoggedIn, getUserDetailsFromDb);
 
 // This is an endpoint to add dish to DB and store it with Specific user details.
 app.post("/api/adddish", isLoggedIn, async (req, res) => {
