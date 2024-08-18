@@ -3,9 +3,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose"); //Connects backend to MongoDB
 const multer = require("multer");
 const path = require("path");
+const axios = require("axios"); //Used to send async req to REST Endpoints
 
 //Used for Authentication
 const passport = require("passport");
@@ -14,39 +14,24 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
-const axios = require("axios"); //Used to send async req to REST Endpoints
-
 const { storage } = require("./cloudConfig");
 const upload = multer({ storage });
+const websiteUser = require("./models/user.js");
+const Dish = require("./models/userFoodSchema.js");
+const connectDB = require("./db.js");
+
+const isLoggedIn = require("./middleware.js");
 
 const apiKey = process.env.GOOGLE_API_KEY;
-const dbUrl = process.env.ATLAS_DB_URL;
-
 console.log(dbUrl);
 
-//Method to connect Backend Server to MongoDB
-// main()
-//   .then(() => {
-//     console.log("Connection Successful");
-//   })
-//   .catch((err) => console.log(err));
+async function connectToDB() {
+  console.log("Connect To DB Called");
+  await connectDB();
+  console.log("After connection");
+}
 
-// async function main() {
-//   await mongoose.connect(dbUrl);
-// }
-
-// app.use((req, res, next) => {
-//   res.header(
-//     "Access-Control-Allow-Origin",
-//     "http://localhost:5173",
-//     "https://kyakhanahai-frontend.onrender.com"
-//   ); // Replace "*" with allowedOrigins for better security
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
+connectToDB();
 
 //Middleware For CORS that accepts below mentione requests
 const allowedOrigins = [
@@ -78,112 +63,39 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-mongoose.connect(dbUrl);
-
-// const connection = mongoose.createConnection(dbUrl);
-
-const sessionStore = MongoStore.create({
-  client: mongoose.connection.getClient(),
-  collection: "session",
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 60 * 60,
 });
 
-app.use(
-  session({
-    secret: "Your secret here",
-    saveUninitialized: false,
-    resave: false,
-    store: sessionStore,
-  })
-);
-
-sessionStore.on("error", function (error) {
-  console.log("Session store error:", error);
+store.on("error", () => {
+  console.log("Error in the MONGO SESSION STORE.", error);
 });
+
+const sessionOptions = {
+  store,
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true, //To Prevent Cross_Scripting Attacks
+  },
+};
+
+app.use(session(sessionOptions));
+app.use(cookieParser("asdfghjkl"));
+
 //Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
-
-/* MODEL FOR THE DISH START */
-const userFoodSchema = new mongoose.Schema({
-  id: Number,
-  name: String,
-  category: String,
-  type: String,
-
-  //It stores users data so that each dish can be associated to a user
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "WebsiteUser",
-    required: true,
-  },
-});
-
-const Dish = mongoose.model("Dish", userFoodSchema);
-/* MODEL FOR THE DISH END */
-
-/* MODEL FOR THE USER STARTS*/
-const websiteUserSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  username: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  profile: {
-    address: { type: String },
-    locality: { type: String },
-    phone: { type: String },
-  },
-  profilePic: { type: String },
-});
-
-websiteUserSchema.plugin(passportLocalMongoose, { usernameField: "email" });
-
-const websiteUser = mongoose.model("websiteUser", websiteUserSchema);
-/* MODEL FOR THE USER ENDS */
-
-passport.use(new LocalStrategy(websiteUser.authenticate()));
-
-// Serializing & Deserializing Middlewares
-// They help data to be stored and transferred
-passport.serializeUser((user, done) => {
-  done(null, user.id); // Save user ID in the session
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await websiteUser.findById(id);
-    if (!user) {
-      return done(null, false);
-    }
-    return done(null, user);
-  } catch (err) {
-    return done(err);
-  }
-});
-
-// // Multer configuration
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     return cb(null, "uploads/");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, `${Date.now()}_${file.originalname}`); // Append the file extension
-//   },
-// });
-
-// Middleware to check if the user is authenticated or not. This middleware is used to check actual users information for authentication.
-const isLoggedIn = (req, res, next) => {
-  console.log("isLoggedIn middleware triggered");
-  console.log("User:", req.user); // Check if the user object is populated
-  if (!req.isAuthenticated()) {
-    console.log("User not authenticated, sending 401 response");
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  console.log("User authenticated, proceeding to next middleware");
-  next();
-};
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // This middleware check whether the user is logged In or not so that Navbar can be rendered Accordingly.
 app.get("/api/checkAuth", (req, res) => {
