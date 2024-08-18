@@ -7,7 +7,7 @@ const path = require("path");
 const { storage } = require("./cloudConfig");
 const websiteUser = require("./models/user.js");
 
-module.exports.index = async (req, res) => {
+module.exports.checkAuth = async (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ authenticated: true });
   } else {

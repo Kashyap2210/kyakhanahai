@@ -97,54 +97,55 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 const authenticationController = require("./Controller/authenticationController.js");
-const temporaryProfilePicUpload = require("./Controller/authenticationController.js");
-const deleteTemporartProfilePic = require("./Controller/authenticationController.js");
-const signUp = require("./Controller/authenticationController.js");
-const logIn = require("./Controller/authenticationController.js");
-const getUserDetailsFromDb = require("./Controller/authenticationController.js");
-const logout = require("./Controller/authenticationController.js");
-
-const addDish = require("./Controller/dishControllers.js");
-const showDish = require("./Controller/dishControllers.js");
-const deleteDish = require("./Controller/dishControllers.js");
-const getDish = require("./Controller/dishControllers.js");
-const searchNearByRestaurants = require("./Controller/dishControllers.js");
+const dishControllers = require("./Controller/dishControllers.js");
 
 // This middleware check whether the user is logged In or not so that Navbar can be rendered Accordingly.
-app.get("/api/checkAuth", authenticationController);
+app.get("/api/checkAuth", authenticationController.checkAuth);
 
-app.post("/api/upload", upload.single("profilePic"), temporaryProfilePicUpload);
+app.post(
+  "/api/upload",
+  upload.single("profilePic"),
+  authenticationController.temporaryProfilePicUpload
+);
 
 // Signup route
-app.post("/api/signup", upload.single("profilePic"), signUp);
+app.post(
+  "/api/signup",
+  upload.single("profilePic"),
+  authenticationController.signUp
+);
 
-app.delete("/delete-file", deleteTemporartProfilePic);
+app.delete("/delete-file", authenticationController.deleteTemporartProfilePic);
 
 // This is an endpoint for logging in the user
-app.post("/api/login", logIn);
+app.post("/api/login", authenticationController.logIn);
 
-app.get("/api/user", isLoggedIn, getUserDetailsFromDb);
+app.get("/api/user", isLoggedIn, authenticationController.getUserDetailsFromDb);
 
 // This is an endpoint to add dish to DB and store it with Specific user details.
-app.post("/api/adddish", isLoggedIn, addDish);
+app.post("/api/adddish", isLoggedIn, dishControllers.addDish);
 
 // This is an endpoint to show all the dishes that user has stored in the DB
-app.get("/api/showdish", isLoggedIn, showDish);
+app.get("/api/showdish", isLoggedIn, dishControllers.showDish);
 
 // This is an endpoint for deleting a dish
-app.post("/api/deletedish", deleteDish);
+app.post("/api/deletedish", dishControllers.deleteDish);
 
 // This is an endpoint to generate a random dish
-app.get("/api/getdish", isLoggedIn, getDish);
+app.get("/api/getdish", isLoggedIn, dishControllers.getDish);
 
 // This is an endpoint to get nearby restaurants using PLACE API
-app.get("/api/getNearbyRestaurants", isLoggedIn, searchNearByRestaurants);
+app.get(
+  "/api/getNearbyRestaurants",
+  isLoggedIn,
+  dishControllers.searchNearByRestaurants
+);
 
 // This is an endpoint to logout the user
-app.post("/api/logout", logout);
+app.post("/api/logout", authenticationController.logout);
 
 //This is an endpoint to DELETE user
-app.delete("/api/deleteaccount", deleteAccount);
+app.delete("/api/deleteaccount", authenticationController.deleteAccount);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
