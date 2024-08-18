@@ -263,45 +263,38 @@ app.delete("/delete-file", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res, next) => {
-  console.log("Log In Request Received At Backend");
-
   const { username, password } = req.body;
 
-  // Check if username and password are provided
+  // Check if username and password are defined
   if (!username || !password) {
     return res
       .status(400)
       .json({ error: "Username and password are required" });
   }
 
+  console.log("Log In Request Received At Backend");
+
   passport.authenticate("local", async (err, user, info) => {
     if (err) {
-      console.error("Authentication Error:", err);
-      return next(err); // Pass the error to the next middleware (error handler)
+      return next(err);
     }
-
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).send({ message: "Invalid credentials" });
     }
 
     req.logIn(user, async (err) => {
       if (err) {
-        console.error("Login Error:", err);
         return next(err);
       }
 
       try {
-        // Fetch the current user from the database without the password
         const currentUser = await websiteUser
-          .findById(user._id)
-          .select("-password");
-
-        // Respond with the user details
+          .findById(username)
+          .select("-password"); // Exclude password from response
         return res
           .status(200)
-          .json({ message: "Login successful", currentUser });
+          .send({ message: "Login successful", currentUser });
       } catch (err) {
-        console.error("Database Query Error:", err);
         return next(err);
       }
     });
