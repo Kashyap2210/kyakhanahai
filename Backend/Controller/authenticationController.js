@@ -1,5 +1,11 @@
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const websiteUser = require("../models/user");
+require("dotenv").config(); //Use it to deal with Enviorment Variables
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const { storage } = require("./cloudConfig");
+const websiteUser = require("./models/user.js");
 
 module.exports.index = async (req, res) => {
   if (req.isAuthenticated()) {
@@ -14,6 +20,17 @@ module.exports.temporaryProfilePicUpload = async (req, res) => {
     return res.status(400).send("No file uploaded.");
   }
   res.status(200).json({ filePath: `/upload/${req.file.filename}` });
+};
+
+module.exports.deleteTemporartProfilePic = async (req, res) => {
+  const filePath = req.body.filePath;
+  fs.unlink(path.join(__dirname, "..", filePath), (err) => {
+    if (err) {
+      console.error("Error deleting file:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json({ message: "File deleted successfully" });
+  });
 };
 
 module.exports.signUp = async (req, res) => {
@@ -111,5 +128,42 @@ module.exports.getUserDetailsFromDb = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "An error occurred" });
+  }
+};
+
+module.exports.logout = (req, res, next) => {
+  console.log("Logout Request Recieved In Backeng");
+  req.logout((err) => {
+    if (err) {
+      console.log("Error during logout:", err);
+      return next(err);
+    }
+    req.session.destroy((err) => {
+      if (err) {
+        console.log("Error destroying session:", err);
+        return next(err);
+      }
+      res.clearCookie("connect.sid");
+      res.status(200).send({ message: "Logout successful" });
+      console.log("User Logged Out");
+    });
+  });
+};
+
+module.exports.deleteAccount = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log(userId);
+    const userToBeDeleted = await websiteUser.findById(userId);
+    console.log(userToBeDeleted);
+    if (!userToBeDeleted) {
+      return res.status(404).send("User not found");
+    }
+    await websiteUser.findByIdAndDelete(userId);
+    res.status(200).send("User Deleted");
+    console.log("Account Deleted, Response Sent");
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).send("An error occurred");
   }
 };
