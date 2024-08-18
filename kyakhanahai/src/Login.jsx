@@ -44,7 +44,7 @@ export default function Login() {
         //   }
         // );
 
-        const currentUser = response.data?.currentUser;
+        const currentUser = response.data.currentUser;
         console.log(currentUser);
         if (currentUser) {
           setUserDetails(currentUser);
