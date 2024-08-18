@@ -44,19 +44,21 @@ export default function Login() {
         //   }
         // );
 
-        const currentUser = response.data.currentUser;
+        const currentUser = response.data?.currentUser;
         console.log(currentUser);
-        // Update context and localStorage with user details
-        setUserDetails(currentUser);
-        localStorage.setItem("userDetails", JSON.stringify(currentUser));
+        if (currentUser) {
+          setUserDetails(currentUser);
+          localStorage.setItem("userDetails", JSON.stringify(currentUser));
 
-        navigate("/"); // Redirect to homepage after successful login
+          navigate("/"); // Redirect to homepage after successful login
+        }
+        // Update context and localStorage with user details
       } else {
         console.log("Login failed");
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      alert("Please check user details");
+      console.log("Login failed, no currentUser found.");
+      alert("Please check your login details.");
     }
   };
 
