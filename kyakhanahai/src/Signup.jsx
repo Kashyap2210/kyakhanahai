@@ -40,6 +40,7 @@ export default function Signup() {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            withCredentials: true,
           }
         );
 
@@ -93,13 +94,13 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        `https://kyakhanahai-backend.onrender.com/api/signup`,
+        `http://localhost:3000/api/signup`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            withCredentials: true,
           },
+          withCredentials: true,
         }
       );
 

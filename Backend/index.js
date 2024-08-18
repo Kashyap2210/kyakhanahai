@@ -78,10 +78,7 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: "Something went wrong!" });
 });
 
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(dbUrl);
 
 // const connection = mongoose.createConnection(dbUrl);
 
@@ -154,10 +151,16 @@ passport.serializeUser((user, done) => {
   done(null, user.id); // Save user ID in the session
 });
 
-passport.deserializeUser((id, done) => {
-  websiteUser.findById(id, (err, user) => {
-    done(err, user); // Attach user object to req.user
-  });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await websiteUser.findById(id);
+    if (!user) {
+      return done(null, false);
+    }
+    return done(null, user);
+  } catch (err) {
+    return done(err);
+  }
 });
 
 // // Multer configuration
@@ -285,7 +288,7 @@ app.post("/api/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      
+
       res.status(200).send({ message: "Login successful" });
     });
   })(req, res, next);
@@ -297,7 +300,7 @@ app.get("/api/user", isLoggedIn, async (req, res) => {
     // Assuming user ID is stored in session or token
     const userId = req.user._id; // Example: req.user is set by authentication middleware
     const user = await websiteUser.findById(userId).select("-password"); // Exclude password from response
-    
+
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
