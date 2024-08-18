@@ -263,7 +263,7 @@ app.delete("/delete-file", async (req, res) => {
 });
 
 // This is an endpoint for logging in the user
-app.post("/api/login", (req, res, next) => {
+app.post("/api/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   // Check if username and password are defined
@@ -285,13 +285,10 @@ app.post("/api/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      res.status(200).send({ message: "Login successful" });
+      // res.status(200).send({ message: "Login successful" });
     });
   })(req, res, next);
   console.log("User Successfully Logged In");
-});
-
-app.get("/api/user", isLoggedIn, async (req, res) => {
   try {
     // Assuming user ID is stored in session or token
     const userId = req.user._id; // Example: req.user is set by authentication middleware
@@ -307,6 +304,8 @@ app.get("/api/user", isLoggedIn, async (req, res) => {
     res.status(500).send({ message: "An error occurred" });
   }
 });
+
+// app.get("/api/user", isLoggedIn, async (req, res) => {});
 
 // This is an endpoint to add dish to DB and store it with Specific user details.
 app.post("/api/adddish", isLoggedIn, async (req, res) => {

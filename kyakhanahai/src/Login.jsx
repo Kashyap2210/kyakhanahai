@@ -36,17 +36,17 @@ export default function Login() {
       );
 
       if (response.status === 200) {
-        // Fetch user details
-        const userResponse = await axios.get(
-          `https://kyakhanahai-backend.onrender.com/api/user`,
-          {
-            withCredentials: true,
-          }
-        );
+        // // Fetch user details
+        // const userResponse = await axios.get(
+        //   `https://kyakhanahai-backend.onrender.com/api/user`,
+        //   {
+        //     withCredentials: true,
+        //   }
+        // );
 
         // Update context and localStorage with user details
-        setUserDetails(userResponse.data);
-        localStorage.setItem("userDetails", JSON.stringify(userResponse.data));
+        setUserDetails(response.user);
+        localStorage.setItem("userDetails", JSON.stringify(response.user));
 
         navigate("/"); // Redirect to homepage after successful login
       } else {
