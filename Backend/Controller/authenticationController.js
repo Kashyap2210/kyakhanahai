@@ -6,69 +6,50 @@ require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
 const multer = require("multer");
 const { storage } = require("../cloudConfig");
+const authenticationServices = require("../Services/authenticationServices");
 
 module.exports.checkAuth = async (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({ authenticated: true });
-  } else {
-    res.json({ authenticated: false });
+  try {
+    const authenticated = await authenticationServices.checkAuthService(req);
+    res.json({ authenticated });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 module.exports.temporaryProfilePicUpload = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+  try {
+    const filePath =
+      await authenticationServices.temporaryProfilePicUploadService(req.file);
+    res.status(200).json({ filePath });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
-  res.status(200).json({ filePath: `/upload/${req.file.filename}` });
 };
 
 module.exports.deleteTemporartProfilePic = async (req, res) => {
-  const filePath = req.body.filePath;
-  fs.unlink(path.join(__dirname, "..", filePath), (err) => {
-    if (err) {
-      console.error("Error deleting file:", err);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-    res.status(200).json({ message: "File deleted successfully" });
-  });
+  try {
+    const response =
+      await authenticationServices.deleteTemporaryProfilePicService(
+        req.body.filePath
+      );
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports.signUp = async (req, res) => {
-  const { username, password, name, address, phoneNumber, locality } = req.body;
-  const profilePic = req.file ? req.file.path : null;
-  console.log(req.file);
-  console.log(profilePic);
   try {
-    const existingUser = await websiteUser.findOne({ username });
-    if (existingUser) {
-      return res.status(409).json({ message: "User already registered" });
-    }
-
-    const newUser = new websiteUser({
-      email: username,
-      username,
-      name,
-      profile: {
-        address,
-        locality,
-        phone: phoneNumber,
-      },
-      profilePic,
-    });
-
-    try {
-      await websiteUser.register(newUser, password);
-    } catch (error) {
-      console.error("Error during registration:", error);
-      return res.status(500).json({ message: "Signup failed" });
-    }
-    // Authenticate the user
+    const newUser = await authenticationServices.signUpService(
+      req.body,
+      req.file
+    );
+    const { email, username, name, profile, profilePic } = newUser;
     req.login(newUser, (err) => {
       if (err) {
-        console.error("Error during login:", err);
-        return res.status(500).json({ message: "Login error" });
+        throw new Error("Login error");
       }
-      const { email, username, name, profile, profilePic } = newUser;
       res.status(200).json({
         email,
         username,
@@ -80,90 +61,46 @@ module.exports.signUp = async (req, res) => {
       });
     });
   } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Signup error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
 module.exports.logIn = async (req, res, next) => {
-  const { username, password } = req.body;
-
-  // Check if username and password are defined
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: "Username and password are required" });
+  try {
+    const user = await authenticationServices.logInService(req, res, next);
+    res.status(200).json({ message: "Login successful", user });
+  } catch (error) {
+    res.status(401).json({ message: error.message });
   }
-
-  console.log("Log In Request Recieved At Backend");
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return res.status(401).send({ message: "Invalid credentials" });
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-
-      res.status(200).send({ message: "Login successful" });
-    });
-  })(req, res, next);
-  console.log("User Successfully Logged In");
 };
 
 module.exports.getUserDetailsFromDb = async (req, res) => {
   try {
-    // Assuming user ID is stored in session or token
-    const userId = req.user._id; // Example: req.user is set by authentication middleware
-    const user = await websiteUser.findById(userId).select("-password"); // Exclude password from response
-
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-
-    res.status(200).send(user);
+    const user = await authenticationServices.getUserDetailsService(
+      req.user._id
+    );
+    res.status(200).json(user);
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: "An error occurred" });
+    res.status(500).json({ message: error.message });
   }
 };
 
-module.exports.logout = (req, res, next) => {
-  console.log("Logout Request Recieved In Backeng");
-  req.logout((err) => {
-    if (err) {
-      console.log("Error during logout:", err);
-      return next(err);
-    }
-    req.session.destroy((err) => {
-      if (err) {
-        console.log("Error destroying session:", err);
-        return next(err);
-      }
-      res.clearCookie("connect.sid");
-      res.status(200).send({ message: "Logout successful" });
-      console.log("User Logged Out");
-    });
-  });
+module.exports.logout = async (req, res, next) => {
+  try {
+    const response = await authenticationServices.logoutService(req);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports.deleteAccount = async (req, res) => {
   try {
-    const { userId } = req.body;
-    console.log(userId);
-    const userToBeDeleted = await websiteUser.findById(userId);
-    console.log(userToBeDeleted);
-    if (!userToBeDeleted) {
-      return res.status(404).send("User not found");
-    }
-    await websiteUser.findByIdAndDelete(userId);
-    res.status(200).send("User Deleted");
-    console.log("Account Deleted, Response Sent");
+    const response = await authenticationServices.deleteAccountService(
+      req.body.userId
+    );
+    res.status(200).json(response);
   } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).send("An error occurred");
+    res.status(500).json({ message: error.message });
   }
 };
