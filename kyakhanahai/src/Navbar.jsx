@@ -8,8 +8,7 @@ import UserProfileContext from "../Context/UserContext";
 
 // import RestaurantIcon from "@mui/icons-material/Restaurant";
 
-const VITE_APP_API_URL =
-  import.meta.env.VITE_APP_API_URL || "https://kyakhanahai.onrender.com";
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL;
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); //isAuthenticated state is used to display seperate navbar elements depending on whether the user is loggedin or not
@@ -36,7 +35,7 @@ export default function Navbar() {
     };
 
     checkAuth(); //Function is called to check the authentication
-    const intervalId = setInterval(checkAuth, 30000); //Sets periodic timer that calls checkAuth every second.
+    const intervalId = setInterval(checkAuth, 3000); //Sets periodic timer that calls checkAuth every second.
     return () => clearInterval(intervalId); //Cleanup function to clear the interval
   }, []);
 

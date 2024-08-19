@@ -26,7 +26,7 @@ export default function Login() {
     try {
       console.log(username, password);
       const response = await axios.post(
-        "http://localhost:3000/api/authenticate/login",
+        `${VITE_APP_API_URL}/api/authenticate/login`,
         { username, password },
         {
           headers: {
@@ -39,7 +39,7 @@ export default function Login() {
       if (response.status === 200) {
         // Fetch user details
         const userResponse = await axios.get(
-          "http://localhost:3000/api/authenticate/user",
+          `${VITE_APP_API_URL}/api/authenticate/user`,
           {
             withCredentials: true,
           }
