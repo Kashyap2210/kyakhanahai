@@ -66,6 +66,9 @@ module.exports.signUp = async (req, res) => {
 };
 
 module.exports.logIn = async (req, res, next) => {
+  console.log("Request Recieved In The Backend For Logging In");
+  const { username, password } = req.body;
+  console.log(username, password);
   try {
     const user = await authenticationServices.logInService(req, res, next);
     res.status(200).json({ message: "Login successful", user });
