@@ -1,6 +1,7 @@
 require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
 const app = express();
+const router = express.Router({ mergeParams: true });
 const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const multer = require("multer");

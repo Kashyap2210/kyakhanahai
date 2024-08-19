@@ -1,9 +1,10 @@
+const fs = require("fs");
+const path = require("path");
 const passport = require("passport");
 const websiteUser = require("../models/user");
 require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
 const { storage } = require("../cloudConfig");
 
 module.exports.checkAuth = async (req, res) => {

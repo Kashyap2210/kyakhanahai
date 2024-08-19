@@ -1,5 +1,6 @@
+const fs = require("fs");
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
