@@ -34,7 +34,7 @@ export default function Signup() {
         formData.append("profilePic", selectedFile);
 
         const response = await axios.post(
-          `${VITE_APP_API_URL}/api/upload`,
+          `${VITE_APP_API_URL}/api/authenticate/upload`,
           formData,
           {
             headers: {
@@ -61,9 +61,12 @@ export default function Signup() {
     const handleBeforeUnload = async () => {
       if (userDetails.filePath) {
         try {
-          await axios.delete(`${VITE_APP_API_URL}/api/delete-file`, {
-            data: { filePath: userDetails.filePath },
-          });
+          await axios.delete(
+            `${VITE_APP_API_URL}/api/authenticate/delete-file`,
+            {
+              data: { filePath: userDetails.filePath },
+            }
+          );
         } catch (error) {
           console.error("Error deleting file:", error);
         }
@@ -94,7 +97,7 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/signup`,
+        `http://localhost:3000/api/authenticate/signup`,
         formData,
         {
           headers: {

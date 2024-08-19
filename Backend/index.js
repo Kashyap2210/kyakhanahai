@@ -4,7 +4,6 @@ const app = express();
 const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const multer = require("multer");
-
 const axios = require("axios"); //Used to send async req to REST Endpoints
 
 //Used for Authentication
@@ -18,9 +17,6 @@ const upload = multer({ storage });
 // const websiteUser = require("./models/user.js");
 // const Dish = require("./models/userFoodSchema.js");
 const connectDB = require("./db.js");
-
-
-const apiKey = process.env.GOOGLE_API_KEY;
 
 const dbUrl = process.env.ATLAS_DB_URL;
 console.log(dbUrl);
@@ -96,10 +92,6 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
-// This is an endpoint to add dish to DB and store it with Specific user details.
-
-// This is an endpoint to logout the user
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

@@ -26,7 +26,7 @@ export default function Login() {
     try {
       // Check if user is authenticated
       const authResponse = await axios.get(
-        `${VITE_APP_API_URL}/api/checkAuth`,
+        `${VITE_APP_API_URL}/api/authenticate/checkAuth`,
         {
           withCredentials: true,
         }
