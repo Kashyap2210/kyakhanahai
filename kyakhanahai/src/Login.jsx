@@ -35,7 +35,7 @@ export default function Login() {
           },
         }
       );
-
+      console.log(response);
       if (response.status === 200) {
         // Fetch user details
         const userResponse = await axios.get(

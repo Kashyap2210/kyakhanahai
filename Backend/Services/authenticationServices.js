@@ -54,15 +54,19 @@ module.exports.logInService = (req, res, next) => {
   return new Promise((resolve, reject) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) {
+        console.log("Error during authentication:", err);
         return reject(err);
       }
       if (!user) {
+        console.log("Authentication failed: Invalid credentials");
         return reject(new Error("Invalid credentials"));
       }
       req.logIn(user, (err) => {
         if (err) {
+          console.log("Error during login:", err);
           return reject(err);
         }
+        console.log("User successfully logged in:", user);
         resolve(user);
       });
     })(req, res, next);

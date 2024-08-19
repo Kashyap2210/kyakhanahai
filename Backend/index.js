@@ -13,6 +13,7 @@ const cookieParser = require("cookie-parser");
 //Used for Authentication
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
@@ -84,7 +85,7 @@ const sessionOptions = {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true, //To Prevent Cross_Scripting Attacks
-    secure: true, // Ensures cookies are only sent over HTTPS
+    secure: process.env.NODE_ENV === "production", // Use true if in production
     sameSite: "strict", // Helps prevent CSRF attacks
   },
 };
@@ -96,8 +97,21 @@ app.use(cookieParser("asdfghjkl"));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(websiteUser.authenticate()));
-passport.serializeUser(websiteUser.serializeUser());
-passport.deserializeUser(websiteUser.deserializeUser());
+passport.serializeUser((user, done) => {
+  done(null, user._id); // Save user ID in the session
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await websiteUser.findById(id); // Fetch user from DB using ID
+    if (!user) {
+      return done(null, false); // If user is not found, return false
+    }
+    return done(null, user); // Return the user object
+  } catch (err) {
+    return done(err); // If there's an error, pass it to done
+  }
+});
 
 app.use("/api/authenticate", authenticationRoutes);
 app.use("/api/dish", dishRoutes);
