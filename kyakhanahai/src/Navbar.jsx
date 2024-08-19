@@ -19,24 +19,21 @@ export default function Navbar() {
   const profilePicUrl = userDetails?.profilePic;
 
   useEffect(() => {
-    // Check authentication status on component mount
     const checkAuth = async () => {
       try {
         const response = await axios.get(
           `${VITE_APP_API_URL}/api/authenticate/checkAuth`,
           {
-            withCredentials: true, //This is used to send data with req, like session cookies
+            withCredentials: true,
           }
         );
-        setIsAuthenticated(response.data.authenticated); //sets the value of state with the data recieved from the backend
+        console.log("Auth response:", response.data); // Add this line to log the response
+        setIsAuthenticated(response.data.authenticated);
       } catch (error) {
         console.error("Error checking authentication status:", error);
       }
     };
-
-    checkAuth(); //Function is called to check the authentication
-    const intervalId = setInterval(checkAuth, 3000); //Sets periodic timer that calls checkAuth every second.
-    return () => clearInterval(intervalId); //Cleanup function to clear the interval
+    checkAuth();
   }, []);
 
   const handleLogout = async () => {

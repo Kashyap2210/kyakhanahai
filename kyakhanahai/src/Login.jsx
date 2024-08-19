@@ -29,9 +29,9 @@ export default function Login() {
         `${VITE_APP_API_URL}/api/authenticate/login`,
         { username, password },
         {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            withCredentials: true,
           },
         }
       );
