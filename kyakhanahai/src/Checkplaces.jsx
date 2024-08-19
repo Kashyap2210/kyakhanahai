@@ -142,7 +142,7 @@ export default function Checkplaces() {
     //Function to fetch restaurants in the nearby the location of the user
     try {
       const response = await axios.get(
-        `${VITE_APP_API_URL}/api/getNearbyRestaurants`,
+        `${VITE_APP_API_URL}/api/dish/getNearbyRestaurants`,
         {
           params: {
             lat: location.latitude,
