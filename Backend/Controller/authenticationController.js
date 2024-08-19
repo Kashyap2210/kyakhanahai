@@ -4,8 +4,7 @@ require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-const { storage } = require("./cloudConfig");
-const websiteUser = require("./models/user.js");
+const { storage } = require("../cloudConfig");
 
 module.exports.checkAuth = async (req, res) => {
   if (req.isAuthenticated()) {

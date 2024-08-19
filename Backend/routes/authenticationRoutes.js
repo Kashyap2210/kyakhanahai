@@ -1,36 +1,36 @@
-require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
-const app = express();
-const cors = require("cors"); //Mechanism to send req from frontend to backend
+const router = express.Router();
 const multer = require("multer");
-const { storage } = require("./cloudConfig");
+const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
-const isLoggedIn = require("./middleware.js");
-const authenticationController = require("./Controller/authenticationController.js");
+const isLoggedIn = require("../middleware.js");
+const authenticationController = require("../Controller/authenticationController.js");
 
-app.get("/api/checkAuth", authenticationController.checkAuth);
+router.get("/checkAuth", authenticationController.checkAuth);
 
-app.post(
-  "/api/upload",
+router.post(
+  "/upload",
   upload.single("profilePic"),
   authenticationController.temporaryProfilePicUpload
 );
 
-// Signup route
-app.post(
-  "/api/signup",
+router.post(
+  "/signup",
   upload.single("profilePic"),
   authenticationController.signUp
 );
 
-app.delete("/delete-file", authenticationController.deleteTemporartProfilePic);
+router.delete(
+  "/delete-file",
+  authenticationController.deleteTemporartProfilePic
+);
 
-// This is an endpoint for logging in the user
-app.post("/api/login", authenticationController.logIn);
+router.post("/login", authenticationController.logIn);
 
-app.get("/api/user", isLoggedIn, authenticationController.getUserDetailsFromDb);
+router.get("/user", isLoggedIn, authenticationController.getUserDetailsFromDb);
 
-app.post("/api/logout", isLoggedIn, authenticationController.logout);
+router.post("/logout", isLoggedIn, authenticationController.logout);
 
-//This is an endpoint to DELETE user
-app.delete("/api/deleteaccount", authenticationController.deleteAccount);
+router.delete("/deleteaccount", authenticationController.deleteAccount);
+
+module.exports = router;

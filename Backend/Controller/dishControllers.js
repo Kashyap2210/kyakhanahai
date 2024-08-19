@@ -1,4 +1,3 @@
-const Dish = require("../models/userFoodSchema");
 require("dotenv").config(); //Use it to deal with Enviorment Variables
 const express = require("express");
 const app = express();
@@ -9,9 +8,9 @@ const axios = require("axios"); //Used to send async req to REST Endpoints
 
 //Used for Authentication
 
-const { storage } = require("./cloudConfig");
+const { storage } = require("../cloudConfig");
 
-const Dish = require("./models/userFoodSchema.js");
+const Dish = require("../models/userFoodSchema.js");
 
 const apiKey = process.env.GOOGLE_API_KEY;
 

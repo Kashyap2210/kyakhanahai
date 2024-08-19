@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
-
+const LocalStrategy = require("passport-local").Strategy;
 
 /* MODEL FOR THE USER STARTS*/
 const websiteUserSchema = new mongoose.Schema({

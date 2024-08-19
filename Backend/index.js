@@ -5,6 +5,9 @@ const cors = require("cors"); //Mechanism to send req from frontend to backend
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const axios = require("axios"); //Used to send async req to REST Endpoints
+const authenticationRoutes = require("./routes/authenticationRoutes.js");
+const dishRoutes = require("./routes/dishRoutes.js");
+const cookieParser = require("cookie-parser");
 
 //Used for Authentication
 const passport = require("passport");
@@ -14,9 +17,9 @@ const MongoStore = require("connect-mongo");
 
 const { storage } = require("./cloudConfig");
 const upload = multer({ storage });
-// const websiteUser = require("./models/user.js");
-// const Dish = require("./models/userFoodSchema.js");
+
 const connectDB = require("./db.js");
+const websiteUser = require("./models/user.js");
 
 const dbUrl = process.env.ATLAS_DB_URL;
 console.log(dbUrl);
@@ -89,9 +92,12 @@ app.use(cookieParser("asdfghjkl"));
 //Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(new LocalStrategy(websiteUser.authenticate()));
+passport.serializeUser(websiteUser.serializeUser());
+passport.deserializeUser(websiteUser.deserializeUser());
+
+app.use("/api/authenticate", authenticationRoutes);
+app.use("/api/dish", dishRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
