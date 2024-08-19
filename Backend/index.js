@@ -84,6 +84,8 @@ const sessionOptions = {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true, //To Prevent Cross_Scripting Attacks
+    secure: true, // Ensures cookies are only sent over HTTPS
+    sameSite: "strict", // Helps prevent CSRF attacks
   },
 };
 
